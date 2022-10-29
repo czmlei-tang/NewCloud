@@ -1,0 +1,9 @@
+spring:
+  #spring:
+  jackson: #返回json的全局时间格式
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+# 设置日志级别
+logging:
+  level:
+    root: ERROR

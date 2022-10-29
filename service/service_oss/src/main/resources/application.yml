@@ -1,0 +1,28 @@
+server:
+  port: 8120 # 服务端口
+
+spring:
+  profiles:
+    active: dev # 环境设置
+  application:
+    name: service-oss # 服务名
+
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: localhost:8848
+#
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    keyid: LTAI5t81kjYt2dLev3mqovD4
+    keysecret: vHxGJunaCK9oqdVTtsyXweTcsixag8
+    #bucket可以在控制台创建，也可以使用java代码创建，注意先测试bucket是否已被占用
+    bucketname: newcloud-file
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+
+
