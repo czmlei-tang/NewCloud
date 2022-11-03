@@ -26,6 +26,9 @@ import lombok.experimental.Accessors;
 @ApiModel(value="Course对象", description="课程")
 public class Course extends BaseEntity {
 
+    public static final String COURSE_DRAFT = "Draft";
+    public static final String COURSE_NORMAL = "Normal";
+
     private static final long serialVersionUID=1L;
 
     @ApiModelProperty(value = "课程讲师ID")

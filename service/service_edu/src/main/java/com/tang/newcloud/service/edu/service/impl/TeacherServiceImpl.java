@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.service.edu.entity.Teacher;
 import com.tang.newcloud.service.edu.entity.vo.TeacherQueryVo;
+import com.tang.newcloud.service.edu.feign.OssFileService;
 import com.tang.newcloud.service.edu.mapper.TeacherMapper;
 import com.tang.newcloud.service.edu.service.TeacherService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -31,6 +33,11 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
 
     @Resource
     private TeacherMapper teacherMapper;
+
+    @Autowired
+    private OssFileService ossFileService;
+
+
 
     @Override
     public List<Teacher> getTeacherList() {
@@ -67,5 +74,19 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
 
         List<Map<String, Object>> list = baseMapper.selectMaps(queryWrapper);//返回值是Map列表
         return list;
+    }
+
+    @Override
+    public boolean removeAvatarById(String id) {
+        Teacher teacher = baseMapper.selectById(id);
+        if(teacher != null) {
+            String avatar = teacher.getAvatar();
+            if(!StringUtils.isEmpty(avatar)){
+                //删除图片
+                R r = ossFileService.removeFile(avatar);
+                return r.getSuccess();
+            }
+        }
+        return false;
     }
 }

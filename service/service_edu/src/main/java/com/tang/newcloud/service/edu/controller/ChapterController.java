@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin //跨域
-@RequestMapping("/edu/chapter")
+@RequestMapping("admin/edu/chapter")
 public class ChapterController {
 
 }

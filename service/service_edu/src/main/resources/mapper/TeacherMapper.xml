@@ -3,7 +3,7 @@
 <mapper namespace="com.tang.newcloud.service.edu.mapper.TeacherMapper">
 
     <select id="selectTeacherList" resultType="com.tang.newcloud.service.edu.entity.Teacher">
-        select * from edu_teacher
+        select * from edu_teacher where is_deleted=0
     </select>
 
     <update id="deleteTeacherById" parameterType="string">

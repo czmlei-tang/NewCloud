@@ -10,11 +10,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 
 @Api(description = "aliyun文件管理")
@@ -22,6 +25,7 @@ import java.io.InputStream;
 @RequestMapping("/admin/oss/file")
 @CrossOrigin
 @Slf4j
+@RefreshScope
 public class FileController {
 
     @Autowired
@@ -46,11 +50,21 @@ public class FileController {
         }
     }
 
-//    @ApiOperation(value = "测试")
-//    @GetMapping("/test")
-//    public R test() {
-//        log.info("oss test被调用");
-//        return R.ok();
-//    }
+
+    @ApiOperation("文件删除")
+    @DeleteMapping("remove")
+    public R removeFile(
+            @ApiParam(value = "要删除的文件路径", required = true)
+            @RequestBody String url) {
+        log.info(url);
+        fileService.removeFile(url);
+        return R.ok().message("文件刪除成功");
+    }
+
+    @ApiOperation("测试")
+    @GetMapping("/test")
+    public R test(){
+        return R.ok().message("testB");
+    }
 
 }

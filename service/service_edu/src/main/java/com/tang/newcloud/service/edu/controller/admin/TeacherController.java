@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.service.edu.entity.Teacher;
 import com.tang.newcloud.service.edu.entity.vo.TeacherQueryVo;
+import com.tang.newcloud.service.edu.feign.OssFileService;
 import com.tang.newcloud.service.edu.service.impl.TeacherServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,7 +13,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +34,16 @@ public class TeacherController {
     @Autowired
     private TeacherServiceImpl teacherService;
 
+    @Autowired
+    private OssFileService ossFileService;
+
+    @ApiOperation("测试")
+    @GetMapping("/test")
+    public R test(){
+        return ossFileService.test();
+    }
+
+
     /**
      * 得到讲师列表
      * @return
@@ -42,7 +52,7 @@ public class TeacherController {
     @GetMapping("/list")
     public R getList(){
         List<Teacher> teacherList=teacherService.getTeacherList();
-        return R.ok().data("list",teacherList);
+        return R.ok().data("items",teacherList);
     }
 
     /**
@@ -53,10 +63,18 @@ public class TeacherController {
     @ApiOperation(value = "根据ID删除讲师", notes = "根据ID删除讲师")
     @DeleteMapping("/remove/{id}")
     public R removeTeacherById(@ApiParam(value = "讲师ID", required = true)@PathVariable String id){
+        try {
+            //删除图片
+            teacherService.removeAvatarById(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //删除讲师
         Integer isRemove = teacherService.removeTeacherById(id);
         return isRemove==1?R.ok().message("删除成功"):R.error().message("数据不存在");
     }
 
+    @ApiOperation(value = "分页list",notes = "分页list")
     @GetMapping("list/{page}/{limit}")
     public R listPage(@ApiParam(value = "当前页码", required = true) @PathVariable Long page,
                       @ApiParam(value = "每页记录数", required = true) @PathVariable Long limit,

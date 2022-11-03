@@ -1,7 +1,11 @@
 package com.tang.newcloud.service.edu.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.service.edu.entity.Course;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
+import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
+import com.tang.newcloud.service.edu.entity.vo.CourseVo;
 
 /**
  * <p>
@@ -13,4 +17,20 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface CourseService extends IService<Course> {
 
+    /**
+     * 保存课程和课程详情信息
+     * @param courseInfoForm
+     * @return 新生成的课程id
+     */
+    String saveCourseInfo(CourseInfoForm courseInfoForm);
+
+    IPage<CourseVo> selectPage(Long page, Long limit, CourseQueryVo courseQueryVo);
+
+    CourseInfoForm getCourseInfoById(String id);
+
+    boolean removeCoverById(String id);
+
+    boolean removeCourseById(String id);
+
+    String updateCourseInfo(CourseInfoForm courseInfoForm);
 }
