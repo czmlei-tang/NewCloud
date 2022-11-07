@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.service.edu.entity.Course;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
+import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
 
@@ -33,4 +34,8 @@ public interface CourseService extends IService<Course> {
     boolean removeCourseById(String id);
 
     String updateCourseInfo(CourseInfoForm courseInfoForm);
+
+    CoursePublishVo getCoursePublishVo(String id);
+
+    boolean publishCourseById(String id);
 }

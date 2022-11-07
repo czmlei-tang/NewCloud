@@ -32,4 +32,19 @@
         ${ew.customSqlSegment}
     </select>
 
+    <select id="selectCoursePublishVoById" resultType="com.tang.newcloud.service.edu.entity.vo.CoursePublishVo" parameterType="String">
+        select
+        c.id,
+        c.title,
+        c.cover,
+        c.lesson_num AS lessonNum,
+        CONVERT(c.price, DECIMAL(8,2)) AS price,
+        t.name AS teacherName,
+        s1.title AS subjectParentTitle,
+        s2.title AS subjectTitle
+        from
+        <include refid="tables"/>
+        WHERE c.id = #{id}
+    </select>
+
 </mapper>

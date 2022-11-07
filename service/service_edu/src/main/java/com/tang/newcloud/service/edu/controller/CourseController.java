@@ -4,6 +4,7 @@ package com.tang.newcloud.service.edu.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
+import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
 import com.tang.newcloud.service.edu.service.impl.CourseServiceImpl;
@@ -99,6 +100,34 @@ public class CourseController {
             @RequestBody CourseInfoForm courseInfoForm){
         String courseId = courseService.updateCourseInfo(courseInfoForm);
         return R.ok().data("courseId", courseId).message("保存成功");
+    }
+
+    @ApiOperation("根据ID获取课程发布信息")
+    @GetMapping("course-publish/{id}")
+    public R getCoursePublishVoById(
+            @ApiParam(value = "课程ID", required = true)
+            @PathVariable String id) {
+        CoursePublishVo coursePublishVo=courseService.getCoursePublishVo(id);
+
+        if(coursePublishVo!=null){
+            return R.ok().data("item", coursePublishVo);
+        }
+
+        return R.error().message("数据不存在");
+    }
+
+    @ApiOperation("根据id发布课程")
+    @PutMapping("publish-course/{id}")
+    public R publishCourseById(
+            @ApiParam(value = "课程ID", required = true)
+            @PathVariable String id){
+
+        boolean result = courseService.publishCourseById(id);
+        if (result) {
+            return R.ok().message("发布成功");
+        } else {
+            return R.error().message("数据不存在");
+        }
     }
 }
 

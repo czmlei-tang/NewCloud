@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.service.edu.entity.*;
 import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
+import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
 import com.tang.newcloud.service.edu.feign.OssFileService;
@@ -180,5 +181,18 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         courseDescriptionMapper.updateById(courseDescription);
 
         return course.getId();
+    }
+
+    @Override
+    public CoursePublishVo getCoursePublishVo(String id) {
+        return baseMapper.selectCoursePublishVoById(id);
+    }
+
+    @Override
+    public boolean publishCourseById(String id) {
+        Course course = new Course();
+        course.setId(id);
+        course.setStatus(Course.COURSE_NORMAL);
+        return this.updateById(course);
     }
 }
