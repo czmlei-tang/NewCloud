@@ -2,6 +2,9 @@ package com.tang.newcloud.service.edu.controller;
 
 
 import com.tang.newcloud.common.base.result.R;
+import com.tang.newcloud.common.base.result.ResultCodeEnum;
+import com.tang.newcloud.common.base.util.ExceptionUtils;
+import com.tang.newcloud.service.base.exception.NewCloudException;
 import com.tang.newcloud.service.edu.entity.Video;
 import com.tang.newcloud.service.edu.service.VideoService;
 import io.swagger.annotations.Api;
@@ -10,6 +13,8 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -67,14 +72,17 @@ public class VideoController {
             return R.error().message("数据不存在");
         }
     }
+    
     @ApiOperation("根据ID删除课时")
     @DeleteMapping("remove/{id}")
     public R removeById(
             @ApiParam(value = "课时ID", required = true)
             @PathVariable String id){
 
-        // 删除视频：VOD
+        //  删除视频：VOD
         //在此处调用vod中的删除视频文件的接口
+
+        videoService.removeMediaVideoById(id);
 
         boolean result = videoService.removeById(id);
         if (result) {
@@ -83,5 +91,7 @@ public class VideoController {
             return R.error().message("数据不存在");
         }
     }
+
+
 }
 

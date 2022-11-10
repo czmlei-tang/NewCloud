@@ -5,6 +5,7 @@ import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.service.edu.entity.Chapter;
 import com.tang.newcloud.service.edu.entity.vo.ChapterVo;
 import com.tang.newcloud.service.edu.service.ChapterService;
+import com.tang.newcloud.service.edu.service.VideoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,8 +33,11 @@ public class ChapterController {
     @Autowired
     private ChapterService chapterService;
 
+    @Autowired
+    private VideoService videoService;
+
     @ApiOperation("新增章节")
-    @PostMapping("save")
+    @PostMapping("/save")
     public R save(
             @ApiParam(value="章节对象", required = true)
             @RequestBody Chapter chapter){
@@ -42,7 +46,7 @@ public class ChapterController {
     }
 
     @ApiOperation("根据id查询章节")
-    @GetMapping("get/{id}")
+    @GetMapping("/get/{id}")
     public R getById(
             @ApiParam(value="章节id", required = true)
             @PathVariable String id){
@@ -52,7 +56,7 @@ public class ChapterController {
     }
 
     @ApiOperation("根据id修改章节")
-    @PutMapping("update")
+    @PutMapping("/update")
     public R updateById(
             @ApiParam(value="章节对象", required = true)
             @RequestBody Chapter chapter){
@@ -71,8 +75,9 @@ public class ChapterController {
             @ApiParam(value = "章节ID", required = true)
             @PathVariable String id){
 
-        //TODO 删除视频：VOD
+        // 删除视频：VOD
         //在此处调用vod中的删除视频文件的接口
+        videoService.removeMediaVideosById(id);
 
         boolean result = chapterService.removeChapterById(id);
         if (result) {

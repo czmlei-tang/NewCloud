@@ -3,6 +3,7 @@ package com.tang.newcloud.service.edu.service;
 import com.tang.newcloud.service.edu.entity.Video;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+
 /**
  * <p>
  * 课程视频 服务类
@@ -13,4 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface VideoService extends IService<Video> {
 
+    void removeMediaVideoById(String id);
+
+    void removeMediaVideosById(String id);
 }

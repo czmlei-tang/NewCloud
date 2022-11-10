@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author tanglei
  * @since 2022-10-26
  */
+
 public interface CourseDescriptionMapper extends BaseMapper<CourseDescription> {
 
 }
