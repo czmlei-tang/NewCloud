@@ -1,4 +1,4 @@
-package com.atguigu.aliyunoss;
+package com.tang.newcloud;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
@@ -11,17 +11,12 @@ import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.po.TableFill;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.tang.newcloud.service.edu.entity.Teacher;
 import com.tang.newcloud.service.edu.mapper.TeacherMapper;
-import com.tang.newcloud.service.edu.service.TeacherService;
 import com.tang.newcloud.service.edu.service.impl.TeacherServiceImpl;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 public class getcode {
 
@@ -100,11 +95,5 @@ public class getcode {
 
         // 6、执行
         mpg.execute();
-    }
-
-
-    @Test
-    public void test1(){
-        System.out.println();
     }
 }

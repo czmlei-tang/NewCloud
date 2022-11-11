@@ -16,5 +16,5 @@ import java.util.List;
  */
 public interface SubjectMapper extends BaseMapper<Subject> {
 
-    List<SubjectVo> selectNestedListByParentId(String s);
+    List<SubjectVo> selectNestedListByParentId(String parentId);
 }

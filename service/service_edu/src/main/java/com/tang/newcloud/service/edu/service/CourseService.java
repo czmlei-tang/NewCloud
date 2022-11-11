@@ -7,6 +7,10 @@ import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
 import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -38,4 +42,13 @@ public interface CourseService extends IService<Course> {
     CoursePublishVo getCoursePublishVo(String id);
 
     boolean publishCourseById(String id);
+
+    List<Course> webSelectList(WebCourseQueryVo webCourseQueryVo);
+
+    /**
+     * 获取课程信息并更新浏览量
+     * @param id
+     * @return
+     */
+    WebCourseVo selectWebCourseVoById(String id);
 }

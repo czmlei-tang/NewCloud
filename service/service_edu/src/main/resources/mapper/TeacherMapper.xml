@@ -2,8 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tang.newcloud.service.edu.mapper.TeacherMapper">
 
-    <select id="selectTeacherList" resultType="com.tang.newcloud.service.edu.entity.Teacher">
+    <resultMap id="teacherResultMap" type="com.tang.newcloud.service.edu.entity.Teacher">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <result property="intro" column="intro"></result>
+        <result property="career" column="career"></result>
+        <result property="level" column="level"></result>
+        <result property="avatar" column="avatar"></result>
+        <result property="sort" column="sort"></result>
+        <result property="joinDate" column="join_date"></result>
+        <result property="isDeleted" column="is_deleted"></result>
+        <result property="gmtCreate" column="gmt_create"></result>
+        <result property="gmtModified" column="gmt_modified"></result>
+    </resultMap>
+
+    <select id="selectTeacherList" resultMap="teacherResultMap">
         select * from edu_teacher where is_deleted=0
+    </select>
+
+    <select id="selectTeacherById" resultMap="teacherResultMap"  parameterType="string">
+        select * from edu_teacher where id=#{id} and is_deleted=0
     </select>
 
     <update id="deleteTeacherById" parameterType="string">

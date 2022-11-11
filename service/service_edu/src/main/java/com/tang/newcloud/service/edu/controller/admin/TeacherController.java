@@ -37,13 +37,6 @@ public class TeacherController {
     @Autowired
     private OssFileService ossFileService;
 
-    @ApiOperation("测试")
-    @GetMapping("/test")
-    public R test(){
-        return ossFileService.test();
-    }
-
-
     /**
      * 得到讲师列表
      * @return

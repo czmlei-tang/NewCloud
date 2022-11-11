@@ -1,4 +1,4 @@
-package com.atguigu.aliyunoss;
+package com.tang.newcloud;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;

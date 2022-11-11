@@ -7,6 +7,8 @@ import com.tang.newcloud.service.edu.entity.Course;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -29,4 +31,10 @@ public interface CourseMapper extends BaseMapper<Course> {
             @Param(Constants.WRAPPER) QueryWrapper<CourseVo> queryWrapper);
 
     CoursePublishVo selectCoursePublishVoById(String id);
+
+    List<Course> selectAllByTeacherId(String id);
+
+    List<Course> selectByWebCourseQueryVo(WebCourseQueryVo webCourseQueryVo);
+
+    WebCourseVo selectWebCourseVoById(String courseId);
 }

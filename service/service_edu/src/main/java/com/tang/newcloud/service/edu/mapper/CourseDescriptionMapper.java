@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 public interface CourseDescriptionMapper extends BaseMapper<CourseDescription> {
 
+    CourseDescription selectDescriptionByCourseId(String id);
+
 }

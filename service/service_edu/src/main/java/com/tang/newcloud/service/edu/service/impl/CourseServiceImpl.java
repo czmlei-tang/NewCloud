@@ -10,9 +10,10 @@ import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
 import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo;
 import com.tang.newcloud.service.edu.feign.OssFileService;
 import com.tang.newcloud.service.edu.mapper.*;
-import com.tang.newcloud.service.edu.service.CourseCollectService;
 import com.tang.newcloud.service.edu.service.CourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -194,5 +195,28 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         course.setId(id);
         course.setStatus(Course.COURSE_NORMAL);
         return this.updateById(course);
+    }
+
+    @Override
+    public List<Course> webSelectList(WebCourseQueryVo webCourseQueryVo) {
+        List<Course> courseList=courseMapper.selectByWebCourseQueryVo(webCourseQueryVo);
+        return courseList;
+    }
+
+    /**
+     * 获取课程信息并更新浏览量
+     * @param id
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public WebCourseVo selectWebCourseVoById(String id) {
+        //更新课程浏览数
+        Course course = baseMapper.selectById(id);
+        course.setViewCount(course.getViewCount() + 1);
+        baseMapper.updateById(course);
+        //获取课程信息
+        WebCourseVo webCourseVo = courseMapper.selectWebCourseVoById(id);
+        return webCourseVo;
     }
 }

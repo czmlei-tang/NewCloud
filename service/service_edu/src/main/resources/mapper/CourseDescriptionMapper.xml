@@ -2,4 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tang.newcloud.service.edu.mapper.CourseDescriptionMapper">
 
+    <select id="selectDescriptionByCourseId"
+            resultType="com.tang.newcloud.service.edu.entity.CourseDescription">
+        select description from edu_course_description where id =#{id}
+    </select>
 </mapper>

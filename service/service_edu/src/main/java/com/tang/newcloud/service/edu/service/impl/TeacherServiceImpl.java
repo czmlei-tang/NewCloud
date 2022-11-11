@@ -3,12 +3,13 @@ package com.tang.newcloud.service.edu.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tang.newcloud.common.base.result.R;
+import com.tang.newcloud.service.edu.entity.Course;
 import com.tang.newcloud.service.edu.entity.Teacher;
 import com.tang.newcloud.service.edu.entity.vo.TeacherQueryVo;
 import com.tang.newcloud.service.edu.feign.OssFileService;
+import com.tang.newcloud.service.edu.mapper.CourseMapper;
 import com.tang.newcloud.service.edu.mapper.TeacherMapper;
 import com.tang.newcloud.service.edu.service.TeacherService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,9 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
 
     @Resource
     private TeacherMapper teacherMapper;
+
+    @Resource
+    private CourseMapper courseMapper;
 
     @Autowired
     private OssFileService ossFileService;
@@ -88,5 +93,21 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
             }
         }
         return false;
+    }
+
+    /**
+     * 根据讲师id获取讲师详情页数据
+     * @param id
+     * @return
+     */
+    @Override
+    public Map<String, Object> selectTeacherInfoById(String id) {
+        Teacher teacher = teacherMapper.selectTeacherById(id);
+        List<Course> courseList = courseMapper.selectAllByTeacherId(id);
+        Map<String, Object> map = new HashMap<>();
+        map.put("teacher",teacher);
+        map.put("courseList",courseList);
+
+        return map;
     }
 }

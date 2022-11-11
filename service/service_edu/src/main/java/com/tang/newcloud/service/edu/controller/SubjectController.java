@@ -37,7 +37,7 @@ public class SubjectController {
     private SubjectService subjectService;
 
     @ApiOperation(value = "Excel批量导入课程类别数据")
-    @PostMapping("import")
+    @PostMapping("/import")
     public R batchImport(
             @ApiParam(value = "Excel文件", required = true)
             @RequestParam("file") MultipartFile file) {
@@ -53,7 +53,7 @@ public class SubjectController {
     }
 
     @ApiOperation(value = "嵌套数据列表")
-    @GetMapping("nested-list")
+    @GetMapping("/nested-list")
     public R nestedList(){
         List<SubjectVo> subjectVoList = subjectService.nestedList();
         return R.ok().data("items", subjectVoList);

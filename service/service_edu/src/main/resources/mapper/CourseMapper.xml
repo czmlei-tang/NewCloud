@@ -24,6 +24,21 @@
         LEFT JOIN edu_subject s2 ON c.subject_id = s2.id
     </sql>
 
+    <sql id="selectAllByTeacherIdSql">
+        id,
+        cover,
+        title
+    </sql>
+
+    <sql id="selectByWebCourseQueryVoSql">
+        id,
+        cover,
+        title,
+        price,
+        view_count as viewCount,
+        buy_count as buyCount
+    </sql>
+
     <select id="selectPageByCourseQueryVo" resultType="com.tang.newcloud.service.edu.entity.vo.CourseVo">
         SELECT
         <include refid="columns" />
@@ -45,6 +60,75 @@
         from
         <include refid="tables"/>
         WHERE c.id = #{id}
+    </select>
+
+    <select id="selectAllByTeacherId" resultType="com.tang.newcloud.service.edu.entity.Course" parameterType="string">
+        select
+        <include refid="selectAllByTeacherIdSql"></include>
+        from edu_course where
+            teacher_id = #{id}
+    </select>
+
+    <select id="selectByWebCourseQueryVo" resultType="com.tang.newcloud.service.edu.entity.Course" parameterType="com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo">
+        select
+        <include refid="selectByWebCourseQueryVoSql"/>
+        from edu_course
+        <where>
+            <if test="subjectParentId !=null and subjectParentId !=''">
+                and subject_parent_id=#{subjectParentId}
+            </if>
+            <if test="subjectId !=null and subjectId !=''">
+                and subjectId=#{subjectId}
+            </if>
+            <choose>
+                <when test="buyCountSort !=null and buyCountSort !=''">
+                    order by buy_count desc
+                </when>
+                <when test="gmtCreateSort !=null and gmtCreateSort !=''">
+                    order by gmt_create_sort desc
+                </when>
+                <when test="priceSort !=null and priceSort !=''">
+                    <choose>
+                        <when test="type == 2">
+                            order by price asc
+                        </when>
+                        <otherwise>
+                            order by price desc
+                        </otherwise>
+                    </choose>
+                </when>
+            </choose>
+        </where>
+    </select>
+    <select id="selectWebCourseVoById" resultType="com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo">
+        SELECT
+            c.id,
+            c.title,
+            c.cover,
+            CONVERT(c.price, DECIMAL(8,2)) AS price,
+            c.lesson_num AS lessonNum,
+            c.buy_count AS buyCount,
+            c.view_count AS viewCount,
+            cd.description,
+
+            t.id AS teacherId,
+            t.name AS teacherName,
+            t.intro,
+            t.avatar,
+
+            s1.id AS subjectLevelOneId,
+            s1.title AS subjectLevelOne,
+            s2.id AS subjectLevelTwoId,
+            s2.title AS subjectLevelTwo
+
+        FROM
+            edu_course c
+                LEFT JOIN edu_course_description cd ON c.id = cd.id
+                LEFT JOIN edu_teacher t ON c.teacher_id = t.id
+                LEFT JOIN edu_subject s1 ON c.subject_parent_id = s1.id
+                LEFT JOIN edu_subject s2 ON c.subject_id = s2.id
+        WHERE
+            c.id = #{id}
     </select>
 
 </mapper>

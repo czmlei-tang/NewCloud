@@ -50,5 +50,4 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video> implements
 
         vodMediaService.removeVideoByIdList(videoSourceIds2);
     }
-
 }
