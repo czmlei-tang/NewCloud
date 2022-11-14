@@ -38,6 +38,22 @@
         view_count as viewCount,
         buy_count as buyCount
     </sql>
+    <resultMap id="BaseCourseMapper" type="com.tang.newcloud.service.edu.entity.Course">
+        <id property="id" column="id"/>
+        <result property="teacherId" column="teacher_id"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="subjectParentId" column="subject_parent_id"/>
+        <result property="title" column="title"/>
+        <result property="price" column="price"/>
+        <result property="lessonNum" column="lesson_num"/>
+        <result property="cover" column="cover"/>
+        <result property="buyCount" column="buy_count"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="version" column="viewCount"/>
+        <result property="status" column="status"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
 
     <select id="selectPageByCourseQueryVo" resultType="com.tang.newcloud.service.edu.entity.vo.CourseVo">
         SELECT
@@ -85,7 +101,7 @@
                     order by buy_count desc
                 </when>
                 <when test="gmtCreateSort !=null and gmtCreateSort !=''">
-                    order by gmt_create_sort desc
+                    order by gmt_create desc
                 </when>
                 <when test="priceSort !=null and priceSort !=''">
                     <choose>
@@ -129,6 +145,9 @@
                 LEFT JOIN edu_subject s2 ON c.subject_id = s2.id
         WHERE
             c.id = #{id}
+    </select>
+    <select id="selectEightCourse" resultMap="BaseCourseMapper">
+        select * from edu_course order by view_count desc limit 8
     </select>
 
 </mapper>

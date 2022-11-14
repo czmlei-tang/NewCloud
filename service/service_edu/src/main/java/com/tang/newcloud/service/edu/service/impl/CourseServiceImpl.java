@@ -18,6 +18,7 @@ import com.tang.newcloud.service.edu.service.CourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -218,5 +219,13 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         //获取课程信息
         WebCourseVo webCourseVo = courseMapper.selectWebCourseVoById(id);
         return webCourseVo;
+    }
+
+    @Override
+    //这里的value 是该缓存的名称，可以随意写，而key要严格按照查询条件来写，比如这里是查询条件id.
+    @Cacheable(value = "index", key = "'selectHotCourse'")
+    public List<Course> selectHotCourse() {
+        List<Course> courses=courseMapper.selectEightCourse();
+        return courses;
     }
 }

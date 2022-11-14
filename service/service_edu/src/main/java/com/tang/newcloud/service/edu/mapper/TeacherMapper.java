@@ -20,4 +20,6 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
     Integer deleteTeacherById(String ids);
 
     Teacher selectTeacherById(String id);
+
+    List<Teacher> selectFourHotTeacher();
 }

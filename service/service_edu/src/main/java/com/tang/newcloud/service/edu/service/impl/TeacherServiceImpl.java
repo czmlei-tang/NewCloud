@@ -15,6 +15,7 @@ import com.tang.newcloud.service.edu.service.TeacherService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -109,5 +110,12 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
         map.put("courseList",courseList);
 
         return map;
+    }
+
+    @Override
+    // 这里的value 是该缓存的名称，可以随意写，而key要严格按照查询条件来写，比如这里是查询条件id.
+    @Cacheable(value = "index", key = "'selectHotTeacher'")
+    public List<Teacher> selectHotTeacher() {
+        return teacherMapper.selectFourHotTeacher();
     }
 }

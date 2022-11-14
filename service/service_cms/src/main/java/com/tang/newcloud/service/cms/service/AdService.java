@@ -1,7 +1,11 @@
 package com.tang.newcloud.service.cms.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.service.cms.entity.Ad;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tang.newcloud.service.cms.entity.vo.AdVo;
+
+import java.util.List;
 
 /**
 * @author 29878
@@ -10,4 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface AdService extends IService<Ad> {
 
+    IPage<AdVo> selectPage(Long page, Long limit);
+
+    boolean removeAdImageById(String id);
+
+    List<Ad> selectByAdTypeId(String adTypeId);
 }

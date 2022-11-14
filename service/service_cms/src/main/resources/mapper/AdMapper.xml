@@ -21,4 +21,17 @@
         image_url,color,link_url,
         sort,gmt_create,gmt_modified
     </sql>
+    <select id="selectPageByQueryWrapper" resultMap="BaseResultMap" resultType="com.tang.newcloud.service.cms.entity.vo.AdVo">
+        SELECT
+            a.id,
+            a.title,
+            a.sort,
+            t.title AS type
+        FROM cms_ad a
+                 LEFT JOIN cms_ad_type t ON a.type_id = t.id
+            ${ew.customSqlSegment}
+    </select>
+    <select id="selectByAdTypeId" resultMap="BaseResultMap">
+        select * from cms_ad where type_id=#{adTypeId} order by sort asc
+    </select>
 </mapper>

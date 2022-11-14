@@ -23,7 +23,9 @@
     <select id="selectTeacherById" resultMap="teacherResultMap"  parameterType="string">
         select * from edu_teacher where id=#{id} and is_deleted=0
     </select>
-
+    <select id="selectFourHotTeacher" resultMap="teacherResultMap">
+        select * from edu_teacher order by sort asc limit 4
+    </select>
     <update id="deleteTeacherById" parameterType="string">
         update edu_teacher set is_deleted=1 where id = #{id}
     </update>
