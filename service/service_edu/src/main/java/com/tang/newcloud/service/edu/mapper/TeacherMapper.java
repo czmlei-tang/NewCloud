@@ -22,4 +22,6 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
     Teacher selectTeacherById(String id);
 
     List<Teacher> selectFourHotTeacher();
+
+    String selectTeacherNameById(String teacherId);
 }

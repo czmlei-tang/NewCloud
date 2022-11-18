@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin
 @Api(description="讲师")
 @RestController
 @RequestMapping("/api/edu/teacher")

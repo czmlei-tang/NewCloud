@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 @Api(description = "aliyun文件管理")
 @RestController
 @RequestMapping("/admin/oss/file")
-@CrossOrigin
 @Slf4j
 @RefreshScope
 public class FileController {

@@ -3,7 +3,6 @@ package com.tang.newcloud.service.edu.controller;
 import com.tang.newcloud.common.base.result.R;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin //跨域
 @RestController
 @RequestMapping("/user")
 public class LoginController {

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@CrossOrigin
+
 @Api(description="首页")
 @RestController
 @RequestMapping("/api/edu/index")

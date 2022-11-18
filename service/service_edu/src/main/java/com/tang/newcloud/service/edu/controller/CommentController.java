@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("admin/edu/comment")
-@CrossOrigin //跨域
 public class CommentController {
 
 }

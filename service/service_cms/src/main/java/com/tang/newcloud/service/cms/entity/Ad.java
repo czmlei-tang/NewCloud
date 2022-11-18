@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @TableName(value ="cms_ad")
 @Data
-public class Ad extends BaseEntity implements Serializable {
+public class Ad  implements Serializable {
     /**
      * ID
      */

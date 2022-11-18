@@ -1,6 +1,7 @@
 package com.tang.newcloud.service.edu.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.tang.newcloud.service.base.dto.CourseDto;
 import com.tang.newcloud.service.edu.entity.Course;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
@@ -53,4 +54,8 @@ public interface CourseService extends IService<Course> {
     WebCourseVo selectWebCourseVoById(String id);
 
     List<Course> selectHotCourse();
+
+    CourseDto getCourseDtoById(String courseId);
+
+    void updateBuyCountById(String id);
 }

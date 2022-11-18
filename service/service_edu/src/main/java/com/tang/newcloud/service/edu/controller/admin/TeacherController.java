@@ -26,7 +26,6 @@ import java.util.Map;
  */
 @Api(description = "讲师管理")
 @RestController
-@CrossOrigin //跨域
 @RequestMapping("/admin/edu/teacher")
 @Slf4j
 public class TeacherController {

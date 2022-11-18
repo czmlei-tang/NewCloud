@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @Api(description="阿里云视频点播")
-@CrossOrigin //跨域
 @RestController
 @RequestMapping("/api/vod/media")
 @Slf4j

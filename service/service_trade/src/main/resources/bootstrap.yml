@@ -1,0 +1,15 @@
+server:
+  port: 8170 # 服务端口
+spring:
+  profiles:
+    active: dev # 环境设置
+  application:
+    name: service-trade # 服务名
+
+  cloud:
+    nacos:
+      config:
+        server-addr: localhost:8848 #配置中心地址
+        file-extension: yaml #指定yaml格式的配置
+        group: dev_group
+        namespace: 767ef991-26ba-4a95-a648-b4fd2bfb882e

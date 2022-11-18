@@ -12,6 +12,7 @@
         <module>common/service_base</module>
         <module>service</module>
         <module>service/service_edu</module>
+        <module>infrastructure</module>
     </modules>
     <name>NewCloud</name>
     <description>NewCloud</description>

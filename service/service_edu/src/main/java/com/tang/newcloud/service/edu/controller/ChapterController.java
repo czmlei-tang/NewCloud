@@ -23,7 +23,6 @@ import java.util.List;
  * @author tanglei
  * @since 2022-10-26
  */
-@CrossOrigin
 @Api(description = "章节管理")
 @RestController
 @RequestMapping("/admin/edu/chapter")

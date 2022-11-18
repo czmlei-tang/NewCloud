@@ -10,6 +10,7 @@ spring:
     nacos:
       discovery:
         server-addr: localhost:8848 # nacos服务地址
+        namespace: 767ef991-26ba-4a95-a648-b4fd2bfb882e
     sentinel:
       transport:
         port: 8081
@@ -20,7 +21,7 @@ spring:
     host: 43.143.129.182
     port: 6379
     database: 0
-    password:  #默认为空
+    password: 123 #默认为空
     timeout: 5000
   #    lettuce:
 #      pool:

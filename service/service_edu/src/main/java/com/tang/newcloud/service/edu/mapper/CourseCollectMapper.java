@@ -2,6 +2,9 @@ package com.tang.newcloud.service.edu.mapper;
 
 import com.tang.newcloud.service.edu.entity.CourseCollect;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tang.newcloud.service.edu.entity.vo.CourseCollectVo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface CourseCollectMapper extends BaseMapper<CourseCollect> {
 
+    Integer selectCourseCollect(String courseId, String memberId);
+
+    List<CourseCollectVo> selectPageByMemberId(String memberId);
 }

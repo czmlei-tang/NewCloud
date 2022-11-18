@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 @Api(description = "推荐位管理")
 @RequestMapping("/admin/cms/ad-type")
 @Slf4j

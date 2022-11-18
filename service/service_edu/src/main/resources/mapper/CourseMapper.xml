@@ -149,5 +149,8 @@
     <select id="selectEightCourse" resultMap="BaseCourseMapper">
         select * from edu_course order by view_count desc limit 8
     </select>
+    <select id="selectByCourseId" resultType="com.tang.newcloud.service.edu.entity.Course">
+        select id,teacher_id as teacherId,title,price,cover from edu_course where id=#{courseId}
+    </select>
 
 </mapper>

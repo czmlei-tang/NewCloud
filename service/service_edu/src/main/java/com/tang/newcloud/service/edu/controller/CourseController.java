@@ -24,7 +24,6 @@ import java.util.List;
  * @author tanglei
  * @since 2022-10-26
  */
-@CrossOrigin
 @RequestMapping("admin/edu/course")
 @RestController
 @Api(description = "课程管理")

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin //解决跨域问题
 @Api(description = "广告推荐管理")
 @RestController
 @RequestMapping("/admin/cms/ad")

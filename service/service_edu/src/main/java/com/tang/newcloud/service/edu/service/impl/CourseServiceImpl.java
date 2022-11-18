@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tang.newcloud.common.base.result.R;
+import com.tang.newcloud.service.base.dto.CourseDto;
 import com.tang.newcloud.service.edu.entity.*;
 import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
 import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
@@ -37,6 +38,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Autowired
     private CourseDescriptionMapper courseDescriptionMapper;
+
+    @Autowired
+    private  TeacherMapper teacherMapper;
 
     @Autowired
     private CourseMapper courseMapper;
@@ -227,5 +231,27 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     public List<Course> selectHotCourse() {
         List<Course> courses=courseMapper.selectEightCourse();
         return courses;
+    }
+
+    @Override
+    public CourseDto getCourseDtoById(String courseId) {
+        CourseDto courseDto = new CourseDto();
+        //根据课程id，拿到数据包括讲师id
+        Course course=courseMapper.selectByCourseId(courseId);
+        String teacherId = course.getTeacherId();
+        //根据teacherId拿到teacherName
+        String teacherName=teacherMapper.selectTeacherNameById(teacherId);
+        //集成courseDto属性
+        BeanUtils.copyProperties(course,courseDto);
+        courseDto.setTeacherName(teacherName);
+
+        return courseDto;
+    }
+
+    @Override
+    public void updateBuyCountById(String id) {
+        Course course = baseMapper.selectById(id);
+        course.setBuyCount(course.getBuyCount() + 1);
+        this.updateById(course);
     }
 }

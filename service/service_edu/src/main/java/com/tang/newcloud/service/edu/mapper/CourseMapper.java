@@ -39,4 +39,6 @@ public interface CourseMapper extends BaseMapper<Course> {
     WebCourseVo selectWebCourseVoById(String courseId);
 
     List<Course> selectEightCourse();
+
+    Course selectByCourseId(String courseId);
 }

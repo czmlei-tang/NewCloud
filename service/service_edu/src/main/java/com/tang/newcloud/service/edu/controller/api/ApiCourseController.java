@@ -1,6 +1,7 @@
 package com.tang.newcloud.service.edu.controller.api;
 
 import com.tang.newcloud.common.base.result.R;
+import com.tang.newcloud.service.base.dto.CourseDto;
 import com.tang.newcloud.service.edu.entity.Course;
 import com.tang.newcloud.service.edu.entity.vo.ChapterVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
 @Api(description="课程")
 @RestController
 @RequestMapping("/api/edu/course")
@@ -49,5 +49,23 @@ public class ApiCourseController {
         List<ChapterVo> chapterVoList = chapterService.nestedList(courseId);
 
         return R.ok().data("course", webCourseVo).data("chapterVoList", chapterVoList);
+    }
+
+    @ApiOperation("根据课程id查询课程信息")
+    @GetMapping("inner/get-course-dto/{courseId}")
+    public CourseDto getCourseDtoById(
+            @ApiParam(value = "课程ID", required = true)
+            @PathVariable String courseId){
+        CourseDto courseDto = courseService.getCourseDtoById(courseId);
+        return courseDto;
+    }
+
+    @ApiOperation("根据课程id更改销售量")
+    @GetMapping("inner/update-buy-count/{id}")
+    public R updateBuyCountById(
+            @ApiParam(value = "课程id", required = true)
+            @PathVariable String id){
+        courseService.updateBuyCountById(id);
+        return R.ok();
     }
 }
