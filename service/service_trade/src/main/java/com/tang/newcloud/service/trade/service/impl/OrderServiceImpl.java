@@ -1,8 +1,10 @@
 package com.tang.newcloud.service.trade.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.tang.newcloud.common.base.result.ResultCodeEnum;
 import com.tang.newcloud.common.base.util.SnowFlakeUtil;
 import com.tang.newcloud.service.base.dto.CourseDto;
@@ -16,6 +18,12 @@ import com.tang.newcloud.service.trade.mapper.PayLogMapper;
 import com.tang.newcloud.service.trade.service.OrderService;
 import com.tang.newcloud.service.trade.mapper.OrderMapper;
 import com.tang.newcloud.service.trade.util.OrderNoUtils;
+import com.tang.newcloud.service.trade.util.RabbitUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,7 +34,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 /**
 * @author 29878
@@ -34,8 +41,12 @@ import java.util.concurrent.CompletableFuture;
 * @createDate 2022-11-16 10:29:53
 */
 @Service
+@Slf4j
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     implements OrderService{
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private EduCourseService eduCourseService;
@@ -50,7 +61,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     private PayLogMapper payLogMapper;
 
     @Override
-    public String saveOrder(String courseId, String memberId) {
+    public String saveOrder(String courseId, String memberId) throws Exception {
 
         //查询当前用户是否已有当前课程的订单
         String orderId=orderMapper.selectOrderByCourseIdAndMenberId(courseId,memberId);
@@ -84,10 +95,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         order.setStatus(0);//未支付
         order.setPayType(1);//微信支付
 
-        orderMapper.insert(order);
+//        String s = JSONUtil.toJsonStr(order);
+//        orderMapper.insert(order);
+        byte[] bytes = RabbitUtil.getBytesFromObject(order);
+        Message message = MessageBuilder.withBody(bytes).setContentType(MessageProperties.CONTENT_TYPE_JSON).build();
+        log.info(message.toString());
+        rabbitTemplate.convertAndSend("newcloud_order","newcloud.order",message);
         return order.getId();
     }
-
 
     @Override
     public Order getByOrderId(String orderId, String memberId) {

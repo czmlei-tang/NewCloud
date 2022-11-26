@@ -8,6 +8,13 @@ spring:
       transport:
         port: 8081
         dashboard: localhost:8080
+#      datasource:
+
+  rabbitmq:
+    virtual-host: newcloud
+    host: 43.143.129.182
+    username: tanglei
+    password: 5201314
 
   #spring:
   redis:

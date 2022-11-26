@@ -58,4 +58,6 @@ public interface CourseService extends IService<Course> {
     CourseDto getCourseDtoById(String courseId);
 
     void updateBuyCountById(String id);
+
+    void removeVodById(String id);
 }

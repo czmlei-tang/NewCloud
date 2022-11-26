@@ -24,6 +24,11 @@ spring:
   jackson: #返回json的全局时间格式
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  redis:
+    host: 43.143.129.182
+    port: 6379
+    database: 0
+    password: 123 #默认为空
 
 mybatis-plus:
   configuration:

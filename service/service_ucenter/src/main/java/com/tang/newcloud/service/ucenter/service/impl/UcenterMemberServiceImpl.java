@@ -15,6 +15,7 @@ import com.tang.newcloud.service.ucenter.service.UcenterMemberService;
 import com.tang.newcloud.service.ucenter.mapper.UcenterMemberMapper;
 import org.apache.commons.lang.StringUtils;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,9 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Resource
     private UcenterMemberMapper memberMapper;
@@ -97,6 +101,14 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         //核对账户有效性
         if(member.getIsDisabled()==1)
             throw new NewCloudException(ResultCodeEnum.LOGIN_DISABLED_ERROR);
+
+//        StringBuffer buffer = new StringBuffer();
+//        buffer.append(member.getNickname());
+//        buffer.append(member.getMobile());
+//        buffer.append("@126.com");
+        String buffer="2987894459@qq.com";
+
+        rabbitTemplate.convertAndSend("newcloud_exchange","newcloud_mail",buffer);
 
         JwtInfo jwtInfo = new JwtInfo(member.getId(),member.getNickname(), member.getAvatar());
         String jwtToken = JwtUtils.getJwtToken(jwtInfo, 1800);

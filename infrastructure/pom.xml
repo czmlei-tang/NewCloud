@@ -21,6 +21,32 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.tang</groupId>
+            <artifactId>common_util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <!--排除spring-boot-starter-web，否则和gateway中的webflux冲突-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-web</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--将随着spring-boot-starter-web排除的servlet-api添加回来 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--gson-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
         <!-- 网关 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

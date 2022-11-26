@@ -17,9 +17,11 @@ import com.tang.newcloud.service.edu.feign.OssFileService;
 import com.tang.newcloud.service.edu.mapper.*;
 import com.tang.newcloud.service.edu.service.CourseService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tang.newcloud.service.edu.service.VideoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +58,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Autowired
     private ChapterMapper chapterMapper;
+
+    @Autowired
+    private VideoService videoService;
 
     @Autowired
     private CommentMapper commentMapper;
@@ -128,6 +133,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
+    @Async("taskExecutor")
     public boolean removeCoverById(String id) {
         Course course = courseMapper.selectById(id);
         if(course != null) {
@@ -143,6 +149,7 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
 
     @Transactional(rollbackFor = Exception.class)
     @Override
+    @Async(value = "taskExecutor")
     public boolean removeCourseById(String id) {
 
         //收藏信息：course_collect
@@ -253,5 +260,15 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
         Course course = baseMapper.selectById(id);
         course.setBuyCount(course.getBuyCount() + 1);
         this.updateById(course);
+    }
+
+    @Override
+    @Async("taskExecutor")
+    public void removeVodById(String id) {
+        List<String> ids=chapterMapper.getChapterById(id);
+        for (String i :
+                ids) {
+            videoService.removeMediaVideosById(i);
+        }
     }
 }

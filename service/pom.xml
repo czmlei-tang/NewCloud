@@ -20,6 +20,7 @@
         <module>service_ucenter</module>
         <module>service_trade</module>
         <module>service_statistics</module>
+        <module>service_listener</module>
     </modules>
 
     <properties>
@@ -41,6 +42,10 @@
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
         </dependency>
 
         <!--mysql-->

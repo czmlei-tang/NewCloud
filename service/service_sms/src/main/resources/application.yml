@@ -11,7 +11,6 @@ spring:
       discovery:
         server-addr: localhost:8848 # nacos服务地址
         namespace: 767ef991-26ba-4a95-a648-b4fd2bfb882e
-  #spring:
   redis:
     host: 43.143.129.182
     port: 6379

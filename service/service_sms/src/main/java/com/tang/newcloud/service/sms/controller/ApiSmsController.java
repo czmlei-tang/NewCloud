@@ -1,6 +1,5 @@
 package com.tang.newcloud.service.sms.controller;
 
-import com.aliyuncs.exceptions.ClientException;
 import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.common.base.result.ResultCodeEnum;
 import com.tang.newcloud.common.base.util.FormUtils;
@@ -16,6 +15,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -46,8 +46,11 @@ public class ApiSmsController {
         //发送验证码
         smsService.send(mobile, checkCode);
         //将验证码存入redis缓存
-        RBucket<String> bucket = redissonClient.getBucket(mobile);
-        bucket.set(checkCode,5, TimeUnit.MINUTES);
+        CompletableFuture.runAsync(()->{
+            RBucket<String> bucket = redissonClient.getBucket(mobile);
+            bucket.set(checkCode,5, TimeUnit.MINUTES);
+        });
+
         log.info(checkCode);
 //        redisTemplate.opsForValue().set(mobile, checkCode, 5, TimeUnit.MINUTES);
 

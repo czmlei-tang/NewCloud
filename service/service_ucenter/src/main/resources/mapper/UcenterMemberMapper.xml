@@ -31,7 +31,7 @@
         select count(id) from ucenter_member where nickname=#{nickname} and mobile=#{mobile}
     </select>
     <select id="selectByMobile" resultMap="BaseResultMap" >
-        select * from ucenter_menber where mobile=#{mobile}
+        select * from ucenter_member where mobile=#{mobile}
     </select>
     <select id="selectByOpenid" resultMap="BaseResultMap">
         select * from ucenter_member where openid=#{openid}

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class ApiOrderController {
 
     @ApiOperation("新增订单")
     @PostMapping("auth/save/{courseId}")
-    public R save(@PathVariable String courseId, HttpServletRequest request) {
+    public R save(@PathVariable String courseId, HttpServletRequest request) throws Exception {
 
         JwtInfo jwtInfo = JwtUtils.getMemberIdByJwtToken(request);
         String orderId = orderService.saveOrder(courseId, jwtInfo.getId());

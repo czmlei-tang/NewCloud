@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,6 +48,7 @@ public class MediaController {
 
     @DeleteMapping("remove/{vodId}")
     @ApiOperation("根据阿里云视频id删除")
+    @RabbitListener(queues = {"newcloud_vod"})
     public R removeVideo(
             @ApiParam(value="阿里云视频id", required = true)
             @PathVariable String vodId){

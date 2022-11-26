@@ -36,6 +36,12 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
+  rabbitmq:
+    virtual-host: newcloud
+    host: 43.143.129.182
+    username: tanglei
+    password: 5201314
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #mybatis日志

@@ -34,10 +34,10 @@
         </dependency>
 
 <!--        springboot整合rabbitmq-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-amqp</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
 
         <!--微信支付-->
         <dependency>
@@ -52,7 +52,10 @@
 <!--            <artifactId>spring-cloud-starter-gateway</artifactId>-->
 <!--        </dependency>-->
 
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

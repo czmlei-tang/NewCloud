@@ -3,6 +3,7 @@ package com.tang.newcloud.service.trade.service;
 import com.tang.newcloud.service.trade.entity.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import java.util.Map;
 */
 public interface OrderService extends IService<Order> {
 
-    String saveOrder(String courseId, String id);
+    String saveOrder(String courseId, String id) throws Exception;
 
     Order getByOrderId(String orderId, String memberId);
 

@@ -7,6 +7,7 @@ import com.tang.newcloud.service.edu.entity.form.CourseInfoForm;
 import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
+import com.tang.newcloud.service.edu.service.VideoService;
 import com.tang.newcloud.service.edu.service.impl.CourseServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,7 @@ import java.util.List;
 public class CourseController {
     @Autowired
     private CourseServiceImpl courseService;
+
 
     @ApiOperation("分页课程列表")
     @GetMapping("list/{page}/{limit}")
@@ -80,6 +82,7 @@ public class CourseController {
 
         //TODO 删除视频：VOD
         //在此处调用vod中的删除视频文件的接口
+        courseService.removeVodById(id);
 
         //删除封面：OSS
         courseService.removeCoverById(id);
