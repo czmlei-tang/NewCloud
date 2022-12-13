@@ -17,9 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>
- * 讲师 前端控制器
- * </p>
  *
  * @author tanglei
  * @since 2022-10-26

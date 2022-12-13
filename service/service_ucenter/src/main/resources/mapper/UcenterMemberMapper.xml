@@ -28,19 +28,19 @@
         gmt_modified
     </sql>
     <select id="selectMemberCount" resultType="java.lang.Integer">
-        select count(id) from ucenter_member where nickname=#{nickname} and mobile=#{mobile}
+        select count(*) from ucenter_member where nickname=#{nickname} and mobile=#{mobile}
     </select>
     <select id="selectByMobile" resultMap="BaseResultMap" >
-        select * from ucenter_member where mobile=#{mobile}
+        select <include refid="Base_Column_List"/> from ucenter_member where mobile=#{mobile}
     </select>
     <select id="selectByOpenid" resultMap="BaseResultMap">
-        select * from ucenter_member where openid=#{openid}
+        select <include refid="Base_Column_List"/> from ucenter_member where openid=#{openid}
     </select>
     <select id="selectMemberDtoByMemberId" resultType="com.tang.newcloud.service.base.dto.MemberDto">
         select id,mobile,nickname from ucenter_member where id=#{memberId}
     </select>
     <select id="selectRegisterNumByDay" resultType="java.lang.Integer">
-        SELECT COUNT(1)
+        SELECT COUNT(*)
         FROM ucenter_member
         WHERE DATE(gmt_create) = #{day}
     </select>

@@ -32,6 +32,6 @@
             ${ew.customSqlSegment}
     </select>
     <select id="selectByAdTypeId" resultMap="BaseResultMap">
-        select * from cms_ad where type_id=#{adTypeId} order by sort asc
+        select <include refid="Base_Column_List"></include> from cms_ad where type_id=#{adTypeId} order by sort asc
     </select>
 </mapper>

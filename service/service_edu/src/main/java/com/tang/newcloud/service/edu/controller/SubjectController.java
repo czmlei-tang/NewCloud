@@ -19,9 +19,6 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * <p>
- * 课程科目 前端控制器
- * </p>
  *
  * @author tanglei
  * @since 2022-10-26

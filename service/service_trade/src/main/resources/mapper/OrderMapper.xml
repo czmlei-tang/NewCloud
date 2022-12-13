@@ -36,12 +36,12 @@
         select id from trade_order where course_id=#{courseId} and member_id=#{memberId}
     </select>
     <select id="selectByOrderIdAndMemberId" resultMap="BaseResultMap">
-        select * from trade_order where id=#{orderId} and member_id=#{memberId}
+        select <include refid="Base_Column_List"></include> from trade_order where id=#{orderId} and member_id=#{memberId}
     </select>
     <select id="selectStatus" resultType="Integer">
         select status from trade_order where course_id=#{courseId} and member_id=#{memberId}
     </select>
     <select id="selectOrderListByMemberId" resultMap="BaseResultMap">
-        select * from  trade_order where member_id=#{memberId} order by gmt_create desc
+        select <include refid="Base_Column_List"></include> from  trade_order where member_id=#{memberId} order by gmt_create desc
     </select>
 </mapper>

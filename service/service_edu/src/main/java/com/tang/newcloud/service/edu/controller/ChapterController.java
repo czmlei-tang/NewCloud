@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * <p>
- * 课程 前端控制器
- * </p>
  *
  * @author tanglei
  * @since 2022-10-26
@@ -44,6 +41,11 @@ public class ChapterController {
         return b?R.ok().message("保存成功"):R.error().message("保存失败");
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @ApiOperation("根据id查询章节")
     @GetMapping("/get/{id}")
     public R getById(

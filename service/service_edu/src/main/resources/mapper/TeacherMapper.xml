@@ -15,16 +15,19 @@
         <result property="gmtCreate" column="gmt_create"></result>
         <result property="gmtModified" column="gmt_modified"></result>
     </resultMap>
+    <sql id="baseSql">
+        id,name,intro,career,level,avatar,sort,join_date,is_deleted,gmt_create,gmt_modified
+    </sql>
 
     <select id="selectTeacherList" resultMap="teacherResultMap">
-        select * from edu_teacher where is_deleted=0
+        select <include refid="baseSql"></include> from edu_teacher where is_deleted=0
     </select>
 
     <select id="selectTeacherById" resultMap="teacherResultMap"  parameterType="string">
-        select * from edu_teacher where id=#{id} and is_deleted=0
+        select <include refid="baseSql"></include> from edu_teacher where id=#{id} and is_deleted=0
     </select>
     <select id="selectFourHotTeacher" resultMap="teacherResultMap">
-        select * from edu_teacher where is_deleted=0 order by sort asc limit 4
+        select <include refid="baseSql"></include> from edu_teacher where is_deleted=0 order by sort asc limit 4
     </select>
     <select id="selectTeacherNameById" resultType="java.lang.String">
         select teacher_name from edu_teacher where teacher_id=#{teacherId}
