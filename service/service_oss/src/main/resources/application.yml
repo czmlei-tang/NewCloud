@@ -9,8 +9,8 @@ spring:
 aliyun:
   oss:
     endpoint: oss-cn-hangzhou.aliyuncs.com
-    keyid: LTAI5t81kjYt2dLev3mqovD4
-    keysecret: vHxGJunaCK9oqdVTtsyXweTcsixag8
+    keyid: 
+    keysecret: 
     #bucket可以在控制台创建，也可以使用java代码创建，注意先测试bucket是否已被占用
     bucketname: newcloud-file
 management:

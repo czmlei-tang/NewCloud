@@ -11,7 +11,7 @@ spring:
     password: 5201314
 aliyun:
   vod:
-    keyid: LTAI5tPvz4DP4agf6Yv14vXs
-    keysecret: 7kTwkrIRcBiRaxTuKCvdTwFRv2b2L6
+    keyid: 
+    keysecret: 
     templateGroupId: VOD_NO_TRANSCODE #转码模板组id
     workflowId: bc23dba618131dd27601c6dd0139f278 #工作流id
