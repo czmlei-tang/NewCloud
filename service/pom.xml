@@ -21,6 +21,7 @@
         <module>service_trade</module>
         <module>service_statistics</module>
         <module>service_listener</module>
+        <module>service_chat</module>
     </modules>
 
     <properties>
@@ -169,5 +170,22 @@
             <version>5.7.20</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

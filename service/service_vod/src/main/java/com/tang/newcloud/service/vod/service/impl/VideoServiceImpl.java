@@ -54,7 +54,7 @@ public class VideoServiceImpl implements VideoService {
             log.error("阿里云上传失败：" + response.getCode() + " - " + response.getMessage());
             throw new NewCloudException(ResultCodeEnum.VIDEO_UPLOAD_ALIYUN_ERROR);
         }
-
+        log.info(videoId);
         return videoId;
     }
 
