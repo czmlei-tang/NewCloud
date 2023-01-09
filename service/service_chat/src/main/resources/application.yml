@@ -1,14 +1,17 @@
 server:
-  tomcat:
-    max-threads: 10
+  port: 8200
 spring:
+  profiles:
+    active: dev
+  application:
+    name: server
   #spring:
   jackson: #返回json的全局时间格式
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/newcloud?serverTimezone=GMT%2B8
+    url: jdbc:mysql://116.205.243.97:3306/newcloud_chat?serverTimezone=GMT%2B8
     username: root
     password: 5201314
   rabbitmq:
@@ -16,6 +19,19 @@ spring:
     host: 43.143.129.182
     username: tanglei
     password: 5201314
+  cache:
+    type: redis
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        namespace: 767ef991-26ba-4a95-a648-b4fd2bfb882e
+  redis:
+    host: 43.143.129.182
+    port: 6379
+    database: 0
+    password: 123
+    timeout: 5000
 
 mybatis-plus:
   configuration:
@@ -28,9 +44,14 @@ logging:
     com.tang.newcloud.service.edu.feign.OssFileService: debug
 
 ribbon:
-  ReadTimeout:  5000
+  ReadTimeout: 5000
   ConnectTimeout: 5000
 
 feign:
   sentinel:
     enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

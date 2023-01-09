@@ -9,6 +9,7 @@ import com.tang.newcloud.service.edu.listener.ExcelSubjectDataListener;
 import com.tang.newcloud.service.edu.mapper.SubjectMapper;
 import com.tang.newcloud.service.edu.service.SubjectService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +27,21 @@ import java.util.List;
 @Service
 public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> implements SubjectService {
 
+    @Autowired
+    private SubjectMapper subjectMapper;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void batchImport(InputStream inputStream) {
 
         // 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭
-        EasyExcel.read(inputStream, ExcelSubjectData.class, new ExcelSubjectDataListener(baseMapper))
-                .excelType(ExcelTypeEnum.XLS).sheet().doRead();
+        EasyExcel.read(inputStream, ExcelSubjectData.class, new ExcelSubjectDataListener(subjectMapper))
+                .excelType(ExcelTypeEnum.XLSX).sheet().doRead();
 
     }
 
     @Override
     public List<SubjectVo> nestedList() {
-        return baseMapper.selectNestedListByParentId("0");
+        return subjectMapper.selectNestedListByParentId("0");
     }
 }

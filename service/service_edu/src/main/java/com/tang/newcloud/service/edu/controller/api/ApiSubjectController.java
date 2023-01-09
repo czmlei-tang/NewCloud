@@ -26,7 +26,4 @@ public class ApiSubjectController {
         List<SubjectVo> subjectVoList = subjectService.nestedList();
         return R.ok().data("items", subjectVoList);
     }
-
-
-
 }

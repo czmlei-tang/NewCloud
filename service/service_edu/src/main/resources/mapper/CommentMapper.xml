@@ -1,5 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tang.newcloud.service.edu.mapper.CommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.tang.newcloud.service.edu.entity.Comment">
+            <id property="id" column="id" jdbcType="CHAR"/>
+            <result property="courseId" column="course_id" jdbcType="CHAR"/>
+            <result property="teacherId" column="teacher_id" jdbcType="CHAR"/>
+            <result property="memberId" column="member_id" jdbcType="CHAR"/>
+            <result property="answerId" column="answer_id" jdbcType="CHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="goodNumber" column="good_number" jdbcType="INTEGER"/>
+            <result property="answerNumber" column="answer_number" jdbcType="INTEGER"/>
+            <result property="watchNumber" column="watch_number" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="WebCommentResoultMap" type="com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo">
+        <id property="id" column="id" jdbcType="CHAR"/>
+        <result property="memberId" column="member_id" jdbcType="CHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="nameAnswer" column="name_answer" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="goodNumber" column="good_number" jdbcType="INTEGER"/>
+        <result property="answerNumber" column="answer_number" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+        <collection property="children"
+                    ofType="com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo"
+                    select="selectComments"
+                    column="id">
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,course_id,teacher_id,
+        member_id,answer_id,nickname,
+        avatar,good_number,answer_number,
+        watch_number,status,content,
+        gmt_create,gmt_modified
+    </sql>
+    <sql id="Web_Comment_Map">
+        a.id,a.member_id,a.nickname,a.avatar,
+        a.good_number,a.answer_number,a.content,
+        a.gmt_create,
+        b.nickname as name_answer
+    </sql>
+    <update id="updateViewById" parameterType="long">
+        update edu_comment set watch_number = watch_number + 1 where id = #{id}
+    </update>
+    <select id="selectOneComment" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from edu_comment where id = #{id}
+    </select>
+    <select id="selectComments" resultMap="WebCommentResoultMap" parameterType="long">
+        select
+            <include refid="Web_Comment_Map"></include>
+                from edu_comment a left join edu_comment b on a.answer_id = b.id
+                    where a.answer_id=#{parentId} order by gmt_create desc
+    </select>
 
 </mapper>

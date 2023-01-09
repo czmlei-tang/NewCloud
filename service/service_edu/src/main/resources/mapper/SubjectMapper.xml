@@ -8,7 +8,7 @@
         <collection property="children"
                     ofType="com.tang.newcloud.service.edu.entity.vo.SubjectVo"
                     select="selectNestedListByParentId"
-                    column="id"/>
+                    column="id"></collection>
     </resultMap>
 
     <select id="selectNestedListByParentId" resultMap="nestedSubject">

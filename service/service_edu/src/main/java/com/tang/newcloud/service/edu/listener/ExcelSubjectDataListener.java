@@ -19,7 +19,6 @@ public class ExcelSubjectDataListener extends AnalysisEventListener<ExcelSubject
     /**
      * 假设这个是一个DAO，当然有业务逻辑这个也可以是一个service。当然如果不用存储这个对象没用。
      */
-    @Autowired
     private SubjectMapper subjectMapper;
 
     /**
