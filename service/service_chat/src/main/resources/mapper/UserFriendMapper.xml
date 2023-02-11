@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tang.newcloud.service.chat.mapper.UserFriendMapper">
+
+    <resultMap id="BaseResultMap" type="com.tang.newcloud.service.chat.entity.UserFriend">
+            <id property="id" column="id" jdbcType="CHAR"/>
+            <result property="fromId" column="from_id" jdbcType="CHAR"/>
+            <result property="toId" column="to_id" jdbcType="CHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,from_id,to_id,
+        status,gmt_create,gmt_modified
+    </sql>
+</mapper>

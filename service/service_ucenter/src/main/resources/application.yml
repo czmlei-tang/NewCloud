@@ -28,7 +28,7 @@ spring:
 
   datasource: # mysql数据库连接
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://116.205.243.97:3306/newcloud_ucenter?serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost:3306/newcloud_ucenter?serverTimezone=GMT%2B8
     username: root
     password: 5201314
   #spring:
@@ -53,3 +53,4 @@ wx:
     appSecret: a7482517235173ddb4083788de60b90e
     # 微信开放平台 重定向url（guli.shop需要在微信开放平台配置）
     redirectUri: http://localhost:8160/api/ucenter/wx/callback
+

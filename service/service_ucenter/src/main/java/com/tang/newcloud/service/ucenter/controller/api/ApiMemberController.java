@@ -35,8 +35,8 @@ public class ApiMemberController {
 
     @ApiOperation(value = "会员登录")
     @PostMapping("/login")
-    public R login(@RequestBody LoginVo loginVo) {
-        String token = memberService.login(loginVo);
+    public R login(@RequestBody LoginVo loginVo,HttpServletRequest request) {
+        String token = memberService.login(loginVo,request);
         return R.ok().data("token", token);
     }
 

@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.ucenter.entity.vo.LoginVo;
 import com.tang.newcloud.service.ucenter.entity.vo.RegisterVo;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
 * @author 29878
 * @description 针对表【ucenter_member(会员表)】的数据库操作Service
@@ -14,7 +16,7 @@ import com.tang.newcloud.service.ucenter.entity.vo.RegisterVo;
 public interface UcenterMemberService extends IService<UcenterMember> {
     void register(RegisterVo registerVo);
 
-    String login(LoginVo loginVo);
+    String login(LoginVo loginVo, HttpServletRequest request);
 
     void saveWechatMember(UcenterMember member);
 

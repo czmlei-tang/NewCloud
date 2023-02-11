@@ -53,6 +53,12 @@
     <update id="updateViewById" parameterType="long">
         update edu_comment set watch_number = watch_number + 1 where id = #{id}
     </update>
+    <update id="updateGoodNumber">
+        update edu_comment set good_number = #{ i } where id = #{id}
+    </update>
+    <delete id="deleteCommentById" parameterType="long">
+        delete from edu_comment where id = #{id}
+    </delete>
     <select id="selectOneComment" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from edu_comment where id = #{id}
     </select>

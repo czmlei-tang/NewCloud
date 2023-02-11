@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tang.newcloud.service.chat.mapper.ChatGroupMapper">
+
+    <resultMap id="BaseResultMap" type="com.tang.newcloud.service.chat.entity.ChatGroup">
+            <id property="id" column="id" jdbcType="CHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="introduce" column="introduce" jdbcType="VARCHAR"/>
+            <result property="groupMasterId" column="group_master_id" jdbcType="CHAR"/>
+            <result property="notice" column="notice" jdbcType="VARCHAR"/>
+            <result property="inType" column="in_type" jdbcType="INTEGER"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,avatar,
+        introduce,group_master_id,notice,
+        in_type,gmt_create,status
+    </sql>
+</mapper>

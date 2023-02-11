@@ -19,6 +19,10 @@ public interface CommentMapper extends BaseMapper<Comment> {
     List<WebCommentVo> selectComments(Long parentId);
 
     void updateViewById(Long id);
+
+    Integer deleteCommentById(Long id);
+
+    void updateGoodNumber(Integer i,String id);
 }
 
 

@@ -12,7 +12,7 @@ public class VideoVo implements Serializable {
 
     private String id;
     private String title;
-    private Boolean free;
+    private Byte isFree;
     private Integer sort;
 
     private String videoSourceId;

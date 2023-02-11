@@ -1,5 +1,7 @@
 package com.tang.newcloud.service.ucenter.service.impl;
 
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tang.newcloud.common.base.result.ResultCodeEnum;
 import com.tang.newcloud.common.base.util.FormUtils;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 
 /**
 * @author 29878
@@ -80,7 +84,7 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
     }
 
     @Override
-    public String login(LoginVo loginVo) {
+    public String login(LoginVo loginVo,HttpServletRequest request) {
         String mobile = loginVo.getMobile();
         String password = loginVo.getPassword();
         password=MD5.encrypt(password);
@@ -106,14 +110,29 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
 //        buffer.append(member.getNickname());
 //        buffer.append(member.getMobile());
 //        buffer.append("@126.com");
-        String buffer="2987894459@qq.com";
+        if(member.getMail()!=null) {
+            HashMap<String, String> mailMap = new HashMap<>();
+            String buffer = member.getMail();
+            String ip = getIp(request);
+            mailMap.put("buffer", buffer);
+            mailMap.put("ip", ip);
 
-        rabbitTemplate.convertAndSend("newcloud_exchange","newcloud_mail",buffer);
-
+            String mail = JSONUtil.toJsonStr(mailMap);
+            rabbitTemplate.convertAndSend("newcloud_exchange", "newcloud_mail", mail);
+        }
         JwtInfo jwtInfo = new JwtInfo(member.getId(),member.getNickname(), member.getAvatar());
         String jwtToken = JwtUtils.getJwtToken(jwtInfo, 1800);
         //返回token
         return jwtToken;
+    }
+
+    /**
+     * 获取用户ip地址
+     * @return
+     */
+    public static String getIp(HttpServletRequest request){
+        String ip = request.getRemoteAddr();
+        return ip;
     }
 
     @Override

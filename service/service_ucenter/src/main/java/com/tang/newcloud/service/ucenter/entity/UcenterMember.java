@@ -3,7 +3,9 @@ package com.tang.newcloud.service.ucenter.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import com.tang.newcloud.service.base.model.BaseEntity;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -12,6 +14,8 @@ import lombok.experimental.Accessors;
  */
 @TableName(value ="ucenter_member")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UcenterMember extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,6 +29,11 @@ public class UcenterMember extends BaseEntity implements Serializable {
      * 手机号
      */
     private String mobile;
+
+    /**
+     * 邮箱
+     */
+    private String mail;
 
     /**
      * 密码

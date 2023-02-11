@@ -10,6 +10,7 @@ import java.util.Date;
 import com.tang.newcloud.service.base.model.BaseEntity;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 /**
  * 评论
@@ -21,6 +22,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Comment extends BaseEntity implements Serializable {
     /**
      * 课程id

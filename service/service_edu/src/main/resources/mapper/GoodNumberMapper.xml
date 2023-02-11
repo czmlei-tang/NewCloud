@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tang.newcloud.service.edu.mapper.GoodNumberMapper">
+
+    <resultMap id="BaseResultMap" type="com.tang.newcloud.service.edu.entity.GoodNumber">
+            <id property="id" column="id" jdbcType="CHAR"/>
+            <result property="fromId" column="from_id" jdbcType="CHAR"/>
+            <result property="toId" column="to_id" jdbcType="CHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,from_id,to_id,
+        status
+    </sql>
+    <delete id="deleteData" parameterType="com.tang.newcloud.service.edu.entity.GoodNumber">
+        delete edu_good_number where to_id = #{toId} and from_id = #{fromId}
+    </delete>
+</mapper>

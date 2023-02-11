@@ -16,12 +16,19 @@
             <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <resultMap id="selectPageByQueryWrapperMapper" type="com.tang.newcloud.service.cms.entity.vo.AdVo">
+        <id property="id" column="id" jdbcType="CHAR"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="sort" column="sort" jdbcType="OTHER"/>
+        <result property="type" column="type" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,title,type_id,
         image_url,color,link_url,
         sort,gmt_create,gmt_modified
     </sql>
-    <select id="selectPageByQueryWrapper" resultMap="BaseResultMap" resultType="com.tang.newcloud.service.cms.entity.vo.AdVo">
+    <select id="selectPageByQueryWrapper" resultMap="selectPageByQueryWrapperMapper" resultType="com.tang.newcloud.service.cms.entity.vo.AdVo">
         SELECT
             a.id,
             a.title,

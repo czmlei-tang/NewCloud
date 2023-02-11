@@ -10,6 +10,7 @@
             <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="mail" column="mail" jdbcType="VARCHAR"/>
             <result property="sex" column="sex" jdbcType="TINYINT"/>
             <result property="age" column="age" jdbcType="TINYINT"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
@@ -22,7 +23,7 @@
 
     <sql id="Base_Column_List">
         id,openid,mobile,
-        password,nickname,sex,
+        password,nickname,sex,mail,
         age,avatar,sign,
         is_disabled,is_deleted,gmt_create,
         gmt_modified

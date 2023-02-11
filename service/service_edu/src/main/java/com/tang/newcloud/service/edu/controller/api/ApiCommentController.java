@@ -13,6 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,9 @@ public class ApiCommentController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @ApiOperation("获取问答")
     @GetMapping("/list/{page}/{limit}")
@@ -59,12 +63,36 @@ public class ApiCommentController {
         return R.ok().data("webComments",webCommentVos);
     }
 
+    /**
+     * @description 前端的comment对象必须包括answerid
+     * @param comment
+     * @param request
+     * @return
+     */
     @ApiOperation("发布问题或评论")
     @PostMapping("/auth/pulish")
-    public R pulishComment(@RequestBody Comment comment, HttpServletRequest request){
+    public R pulishComment(@ApiParam(value = "评论对象",required = true)@RequestBody Comment comment, HttpServletRequest request){
         JwtInfo jwtInfo = JwtUtils.getMemberIdByJwtToken(request);
-        Boolean isOK = commentService.saveComment(comment);
+        Boolean isOK = commentService.saveComment(comment,jwtInfo);
         return isOK?R.ok().message("success"):R.error().message("发布失败");
+    }
+
+    @ApiOperation("删除评论")
+    @DeleteMapping("/auth/delete/{id}")
+    public R removeComment(@ApiParam(value = "评论id",required = true) @PathVariable Long id,HttpServletRequest request){
+        JwtInfo jwtInfo = JwtUtils.getMemberIdByJwtToken(request);
+        String memberId = jwtInfo.getId();
+        Boolean isOK = commentService.removeCommentById(id,memberId);
+        return isOK?R.ok().message("delete success"):R.error().message("delete error");
+    }
+
+    @ApiOperation("增加点赞数")
+    @GetMapping("/auth/incr/good-number/{id}")
+    public R IncreaseGood(@ApiParam(value = "评论id",required = true)@PathVariable Long id,HttpServletRequest request){
+        JwtInfo jwtInfo = JwtUtils.getMemberIdByJwtToken(request);
+        String loginMemberId = jwtInfo.getId();
+        Boolean isOK = commentService.updateGoodNumber(id,loginMemberId);
+        return isOK?R.ok().message("点赞爆棚"):R.error().message("不能重复点赞");
     }
 
 }

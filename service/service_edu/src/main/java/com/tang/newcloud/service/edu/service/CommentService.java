@@ -1,6 +1,7 @@
 package com.tang.newcloud.service.edu.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.service.edu.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCommentQueryVo;
@@ -22,5 +23,9 @@ public interface CommentService extends IService<Comment> {
 
     List<WebCommentVo> getComments(Long parentId);
 
-    Boolean saveComment(Comment comment);
+    Boolean saveComment(Comment comment, JwtInfo jwtInfo);
+
+    Boolean removeCommentById(Long id,String memberId);
+
+    Boolean updateGoodNumber(Long id, String loginMemberId);
 }

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.Codec;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -49,6 +51,8 @@ public class RedissonConfig {
                 .setAddress("redis://" + host + ":" + port)
                 .setPassword(password)
                 .setTimeout(5000);
+        Codec codec = new JsonJacksonCodec();
+        config.setCodec(codec);
         //根据config创建出RedissonClient实例
         return Redisson.create(config);
     }
