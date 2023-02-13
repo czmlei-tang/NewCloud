@@ -53,8 +53,7 @@ public class FileController {
     @ApiOperation("文件删除")
     @DeleteMapping("remove")
     public R removeFile(
-            @ApiParam(value = "要删除的文件路径", required = true)
-            @RequestBody String url) {
+            @ApiParam(value = "要删除的文件路径", required = true) String url) {
         log.info(url);
         fileService.removeFile(url);
         return R.ok().message("文件刪除成功");

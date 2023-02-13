@@ -21,4 +21,12 @@
         verify_user_id,remark,auth,
         gmt_create,gmt_modified,user_status
     </sql>
+    <select id="selectUsersWillIn" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from group_user
+            where member_id = #{userId} and auth > 1
+    </select>
+    <select id="selectUsersNotInThegroupById" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from group_user
+            where groupId = #{groupId} and auth = 0
+    </select>
 </mapper>

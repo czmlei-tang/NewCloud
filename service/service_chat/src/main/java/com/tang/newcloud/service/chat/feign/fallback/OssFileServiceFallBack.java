@@ -1,7 +1,7 @@
-package com.tang.newcloud.service.edu.feign.fallback;
+package com.tang.newcloud.service.chat.feign.fallback;
 
 import com.tang.newcloud.common.base.result.R;
-import com.tang.newcloud.service.edu.feign.OssFileService;
+import com.tang.newcloud.service.chat.feign.OssFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

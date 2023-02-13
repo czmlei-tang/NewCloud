@@ -1,5 +1,6 @@
 package com.tang.newcloud.service.ucenter.mapper;
 
+import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.ucenter.entity.UcenterMember;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -23,6 +24,9 @@ public interface UcenterMemberMapper extends BaseMapper<UcenterMember> {
 
     //用户注册的数量
     Integer selectRegisterNumByDay(String day);
+
+    //群组申请dto
+    MemberChatDto selectMemberNameAndAvatar(String id);
 }
 
 

@@ -4,7 +4,9 @@ import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.common.base.util.JwtUtils;
 import com.tang.newcloud.service.chat.entity.ChatGroup;
+import com.tang.newcloud.service.chat.entity.GroupUser;
 import com.tang.newcloud.service.chat.service.ChatGroupService;
+import com.tang.newcloud.service.chat.service.GroupUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,6 +29,9 @@ public class ApiChatGroupController {
     @Autowired
     private ChatGroupService chatGroupService;
 
+    @Autowired
+    private GroupUserService groupUserService;
+
     //创建群组
     @ApiOperation("创建群组")
     @PostMapping("auth/create")
@@ -35,14 +40,15 @@ public class ApiChatGroupController {
 
         JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
         String userId = token.getId();
-        ChatGroup mygroup = chatGroupService.saveGroup(userId,chatGroup);
-        return mygroup!=null?R.ok().data("mygroup",mygroup).message("插入成功"):R.error().message("插入失败");
+        String groupId = chatGroupService.saveGroup(userId,chatGroup);
+        Integer i = groupUserService.savaMaster(groupId,userId);
+        return i>0?R.ok().message("群聊创建成功"):R.error().message("群聊创建失败");
     }
     //删除群组
     @ApiOperation("根据id解散群组")
     @DeleteMapping("auth/delete/{groupId}")
     public R remove(@ApiParam(value = "群组id",required = true)@PathVariable String groupId,
-                    @ApiParam(value = "群组id",required = true)@RequestParam String masterId,
+                    @ApiParam(value = "群主id",required = true)@RequestParam String masterId,
                     HttpServletRequest request){
         JwtInfo jwtToken = JwtUtils.getMemberIdByJwtToken(request);
         String userId = jwtToken.getId();
@@ -50,7 +56,7 @@ public class ApiChatGroupController {
             return R.error().message("你没有权限");
         }
         int i = chatGroupService.deleteGroup(userId,groupId);
-        return i>0?R.ok().message("删除群组成功"):R.error().message("删除失败,请稍后再试");
+        return i>1?R.ok().message("删除群组成功"):R.error().message("删除失败,请稍后再试");
     }
     //修改群组
     @ApiOperation("修改群组")

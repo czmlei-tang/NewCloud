@@ -10,7 +10,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ChatGroupService extends IService<ChatGroup> {
 
-    ChatGroup saveGroup(String userId, ChatGroup chatGroup);
+    String saveGroup(String userId, ChatGroup chatGroup);
 
     Integer deleteGroup(String userId, String groupId);
 

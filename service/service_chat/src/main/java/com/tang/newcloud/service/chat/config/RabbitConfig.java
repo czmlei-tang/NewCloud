@@ -1,4 +1,4 @@
-package com.tang.newcloud.service.edu.config;
+package com.tang.newcloud.service.chat.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -21,24 +21,6 @@ public class RabbitConfig {
         return new Queue("newcloud_oss",true);
     }
 
-    //vod队列
-    @Bean
-    public Queue VODDirectQueue() {
-        return new Queue("newcloud_vod",true);
-    }
-
-    //批量vod对列
-    @Bean
-    public Queue VODsDirectQueue() {
-        return new Queue("newcloud_vod_batch",true);
-    }
-
-    //上传视频队列
-    @Bean
-    public Queue UploadDirectQueue(){
-        return new Queue("newcloud_vod_upload",true);
-    }
-
 
     //Direct交换机 起名：oss和vod交换机
     @Bean
@@ -52,19 +34,5 @@ public class RabbitConfig {
         return BindingBuilder.bind(OSSDirectQueue()).to(OSSAndVODDirectExchange()).with("newcloud_oss");
     }
 
-    @Bean
-    Binding bindingVODDirect() {
-        return BindingBuilder.bind(OSSDirectQueue()).to(OSSAndVODDirectExchange()).with("newcloud_vod");
-    }
-
-    @Bean
-    Binding bindingVODBatchDirect() {
-        return BindingBuilder.bind(OSSDirectQueue()).to(OSSAndVODDirectExchange()).with("newcloud_vod_batch");
-    }
-
-    @Bean
-    Binding bindingVODUploadDirect(){
-        return BindingBuilder.bind(UploadDirectQueue()).to(OSSAndVODDirectExchange()).with("newcloud_vod_upload");
-    }
 
 }

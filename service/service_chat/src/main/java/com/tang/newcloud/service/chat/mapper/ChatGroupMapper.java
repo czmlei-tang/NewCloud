@@ -1,5 +1,6 @@
 package com.tang.newcloud.service.chat.mapper;
 
+import com.tang.newcloud.service.base.dto.GroupDto;
 import com.tang.newcloud.service.chat.entity.ChatGroup;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface ChatGroupMapper extends BaseMapper<ChatGroup> {
 
+    GroupDto selectGroupNameById(String groupId);
 }
 
 

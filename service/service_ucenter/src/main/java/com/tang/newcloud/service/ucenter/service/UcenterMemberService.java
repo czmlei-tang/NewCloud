@@ -1,5 +1,6 @@
 package com.tang.newcloud.service.ucenter.service;
 
+import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.ucenter.entity.UcenterMember;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -7,6 +8,7 @@ import com.tang.newcloud.service.ucenter.entity.vo.LoginVo;
 import com.tang.newcloud.service.ucenter.entity.vo.RegisterVo;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
 * @author 29878
@@ -25,4 +27,6 @@ public interface UcenterMemberService extends IService<UcenterMember> {
     MemberDto getMemberDtoByMemberId(String memberId);
 
     Integer countRegisterNum(String day);
+
+    MemberChatDto getMemberNameAndAvatar(String id);
 }

@@ -2,6 +2,9 @@ package com.tang.newcloud.service.chat.service;
 
 import com.tang.newcloud.service.chat.entity.GroupUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tang.newcloud.service.chat.entity.vo.GroupUserVo;
+
+import java.util.List;
 
 /**
 * @author 29878
@@ -11,4 +14,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface GroupUserService extends IService<GroupUser> {
 
     Integer inGroup(String groupId, String userId, String remark);
+
+    /**
+     * @description 获取群聊验证
+     * @param userId
+     * @return
+     */
+    List<List<GroupUserVo>> readInMes(String userId);
+
+    Integer savaMaster(String groupId, String userId);
 }

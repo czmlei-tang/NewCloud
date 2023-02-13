@@ -1,13 +1,25 @@
 package com.tang.newcloud.service.chat.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.tang.newcloud.common.base.util.DateUtil;
+import com.tang.newcloud.common.base.result.R;
+import com.tang.newcloud.service.base.dto.GroupDto;
+import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.chat.entity.GroupUser;
+import com.tang.newcloud.service.chat.entity.vo.GroupUserVo;
+import com.tang.newcloud.service.chat.feign.UcenterService;
+import com.tang.newcloud.service.chat.mapper.ChatGroupMapper;
 import com.tang.newcloud.service.chat.service.GroupUserService;
 import com.tang.newcloud.service.chat.mapper.GroupUserMapper;
+import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
 * @author 29878
@@ -20,6 +32,15 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
     @Resource
     private GroupUserMapper groupUserMapper;
 
+    @Resource
+    private ChatGroupMapper chatGroupMapper;
+
+    @Resource
+    private UcenterService ucenterService;
+
+    @Resource
+    private ThreadPoolTaskExecutor executor;
+
     @Override
     public Integer inGroup(String groupId, String userId, String remark) {
         GroupUser groupUser = new GroupUser();
@@ -27,6 +48,57 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
         .setGroupId(groupId)
         .setRemark(remark);
 
+        int i = groupUserMapper.insert(groupUser);
+        return i;
+    }
+
+    @Override
+    public List<List<GroupUserVo>> readInMes(String userId) {
+        //该用户管理的群
+        List<GroupUser> groupUser = groupUserMapper.selectUsersWillIn(userId);
+        List<List<GroupUserVo>> membersVo = groupUser.stream().map(groupUser1 -> {
+
+            String groupId = groupUser1.getGroupId();
+            //未审核成员
+            CompletableFuture<List<GroupUserVo>> memberVo = CompletableFuture.supplyAsync(() -> {
+                List<GroupUser> groupUsersNotAck = groupUserMapper.selectUsersNotInThegroupById(groupId);
+                GroupDto groupDto = chatGroupMapper.selectGroupNameById(groupId);
+                List<GroupUserVo> groupUserVos = groupUsersNotAck.stream().map(groupUserNotAck -> {
+                    //创建用户申请vo对象
+                    GroupUserVo groupUserVo = new GroupUserVo();
+
+                    //获取用户信息
+                    String memberId = groupUserNotAck.getMemberId();
+                    R r = ucenterService.readNameAndAvatar(memberId);
+                    MemberChatDto member = (MemberChatDto) r.getData().get("member");
+                    BeanUtils.copyProperties(member, groupUserVo);
+                    groupUserVo.setRemark(groupUserNotAck.getRemark()).setAuth(0);
+                    BeanUtils.copyProperties(groupDto, groupUserVo);
+                    //返回用户申请vo对象
+                    return groupUserVo;
+                }).collect(Collectors.toList());
+                //返回用户申请vo对象列表
+                return groupUserVos;
+            }, executor);
+
+            //返回List<GrouUserVo>
+            try {
+                return memberVo.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+
+        return membersVo;
+    }
+
+    @Override
+    public Integer savaMaster(String groupId,String userId) {
+        GroupUser groupUser = new GroupUser();
+        groupUser.setGroupId(groupId).setMemberId(userId).setAuth(3);
         int i = groupUserMapper.insert(groupUser);
         return i;
     }

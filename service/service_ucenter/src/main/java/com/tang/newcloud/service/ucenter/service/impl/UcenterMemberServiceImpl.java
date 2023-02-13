@@ -1,6 +1,5 @@
 package com.tang.newcloud.service.ucenter.service.impl;
 
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tang.newcloud.common.base.result.ResultCodeEnum;
@@ -8,6 +7,7 @@ import com.tang.newcloud.common.base.util.FormUtils;
 import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.common.base.util.JwtUtils;
 import com.tang.newcloud.common.base.util.MD5;
+import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.base.exception.NewCloudException;
 import com.tang.newcloud.service.ucenter.entity.UcenterMember;
@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
 * @author 29878
@@ -153,6 +154,12 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
     @Override
     public Integer countRegisterNum(String day) {
         return memberMapper.selectRegisterNumByDay(day);
+    }
+
+    @Override
+    public MemberChatDto getMemberNameAndAvatar(String id) {
+        MemberChatDto memberChatDto = memberMapper.selectMemberNameAndAvatar(id);
+        return memberChatDto;
     }
 }
 

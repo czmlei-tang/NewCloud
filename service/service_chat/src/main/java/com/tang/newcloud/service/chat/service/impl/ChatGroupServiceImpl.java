@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tang.newcloud.common.base.util.SnowFlakeUtil;
 import com.tang.newcloud.service.chat.entity.ChatGroup;
+import com.tang.newcloud.service.chat.entity.GroupUser;
+import com.tang.newcloud.service.chat.mapper.GroupUserMapper;
 import com.tang.newcloud.service.chat.service.ChatGroupService;
 import com.tang.newcloud.service.chat.mapper.ChatGroupMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,23 +25,31 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
     @Resource
     private ChatGroupMapper chatGroupMapper;
 
+    @Resource
+    private GroupUserMapper groupUserMapper;
+
     @Override
-    public ChatGroup saveGroup(String userId, ChatGroup chatGroup) {
-        chatGroup.setGroupMasterId(userId).setId(String.valueOf(SnowFlakeUtil.getDefaultSnowFlakeId()));
+    public String saveGroup(String userId, ChatGroup chatGroup) {
+        String groupId = String.valueOf(SnowFlakeUtil.getDefaultSnowFlakeId());
+        chatGroup.setGroupMasterId(userId)
+                .setId(groupId);
         int i = chatGroupMapper.insert(chatGroup);
-        if(i>0){
-            return chatGroup;
-        }else{
-            return null;
-        }
+        return i>0?groupId:null;
     }
 
     @Override
     public Integer deleteGroup(String userId, String groupId) {
+        //删除群
         LambdaQueryWrapper<ChatGroup> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ChatGroup::getId,groupId);
         int i = chatGroupMapper.delete(queryWrapper);
-        return i;
+        //删除群主
+        LambdaQueryWrapper<GroupUser> wapperMaster = new LambdaQueryWrapper<>();
+        wapperMaster.eq(GroupUser::getMemberId,userId)
+                .eq(GroupUser::getGroupId,groupId)
+                .eq(GroupUser::getAuth,3);
+        int a = groupUserMapper.delete(wapperMaster);
+        return i+a;
     }
 
     @Override

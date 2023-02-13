@@ -16,9 +16,19 @@
             <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="selectGroupIdAndName" type="com.tang.newcloud.service.base.dto.GroupDto">
+            <id property="groupId" column="id" jdbcType="CHAR"/>
+            <result property="groupName" column="name" jdbcType="VARCHAR"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,name,avatar,
         introduce,group_master_id,notice,
         in_type,gmt_create,status
     </sql>
+
+    <select id="selectGroupNameById" resultMap="selectGroupIdAndName">
+        select id,name from chat_group where id = #{groupId}
+    </select>
+
 </mapper>

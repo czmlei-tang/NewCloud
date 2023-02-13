@@ -45,4 +45,7 @@
         FROM ucenter_member
         WHERE DATE(gmt_create) = #{day}
     </select>
+    <select id="selectMemberNameAndAvatar" resultType="com.tang.newcloud.service.base.dto.MemberChatDto">
+        select id as memberId,nickname,avatar from ucenter_member where id = #{id}
+    </select>
 </mapper>
