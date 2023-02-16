@@ -2,7 +2,6 @@ package com.tang.newcloud.service.chat.mapper;
 
 import com.tang.newcloud.service.chat.entity.GroupUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.tang.newcloud.service.chat.entity.vo.GroupUserVo;
 
 import java.util.List;
 
@@ -17,6 +16,10 @@ public interface GroupUserMapper extends BaseMapper<GroupUser> {
     List<GroupUser> selectUsersWillIn(String userId);
 
     List<GroupUser> selectUsersNotInThegroupById(String groupId);
+
+    GroupUser selectUserNotInThegroupById(String id);
+
+    int deleteByGroupIdAndUserId(String groupId, String userId);
 }
 
 

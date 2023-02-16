@@ -21,12 +21,17 @@
         verify_user_id,remark,auth,
         gmt_create,gmt_modified,user_status
     </sql>
+    <delete id="deleteByGroupIdAndUserId"></delete>
     <select id="selectUsersWillIn" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from group_user
             where member_id = #{userId} and auth > 1
     </select>
     <select id="selectUsersNotInThegroupById" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from group_user
-            where groupId = #{groupId} and auth = 0
+            where group_id = #{groupId} and auth = 0 and verify_user_id = ''
+    </select>
+    <select id="selectUserNotInThegroupById" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"></include> from group_user
+            where id = #{id}
     </select>
 </mapper>

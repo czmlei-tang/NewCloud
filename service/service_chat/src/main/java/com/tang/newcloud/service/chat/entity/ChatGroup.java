@@ -61,6 +61,11 @@ public class ChatGroup extends BaseEntity implements Serializable {
 //    private Date gmtCreate;
 
     /**
+     * 群总人数
+     */
+    private Integer total;
+
+    /**
      * 0正常，1被封
      */
     private Integer status;

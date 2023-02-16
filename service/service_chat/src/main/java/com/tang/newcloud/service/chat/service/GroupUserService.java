@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.chat.entity.vo.GroupUserVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author 29878
@@ -17,10 +18,24 @@ public interface GroupUserService extends IService<GroupUser> {
 
     /**
      * @description 获取群聊验证
+     * @param userId 管理员id
+     * @return 元素为groupId,List(该群需要验证的人数)
+     */
+    List<Map<String, List<GroupUserVo>>> readInMes(String userId);
+
+    Integer savaMaster(String groupId, String userId);
+
+    Integer agreeUser(String id, String adminId);
+
+    Integer disagreeUser(String id, String adminId);
+
+    /**
+     *
+     * @param groupId
+     * @param type 1：自己退群 2.被管理员删除
+     * @param memberId 退群用户id
      * @param userId
      * @return
      */
-    List<List<GroupUserVo>> readInMes(String userId);
-
-    Integer savaMaster(String groupId, String userId);
+    Integer exitGroup(String groupId, Integer type, String memberId, String userId);
 }

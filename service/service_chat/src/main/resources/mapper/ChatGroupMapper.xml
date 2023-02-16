@@ -12,6 +12,7 @@
             <result property="groupMasterId" column="group_master_id" jdbcType="CHAR"/>
             <result property="notice" column="notice" jdbcType="VARCHAR"/>
             <result property="inType" column="in_type" jdbcType="INTEGER"/>
+            <result property="total" column="total" jdbcType="INTEGER"/>
             <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
     </resultMap>
@@ -24,7 +25,7 @@
     <sql id="Base_Column_List">
         id,name,avatar,
         introduce,group_master_id,notice,
-        in_type,gmt_create,status
+        in_type,total,gmt_create,status
     </sql>
 
     <select id="selectGroupNameById" resultMap="selectGroupIdAndName">

@@ -13,6 +13,8 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class GroupUserVo {
 
+    //主键id
+    private String id;
     //会员id
     private String memberId;
     //申请成员姓名

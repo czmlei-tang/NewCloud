@@ -11,14 +11,13 @@ import com.tang.newcloud.service.chat.mapper.ChatGroupMapper;
 import com.tang.newcloud.service.chat.service.GroupUserService;
 import com.tang.newcloud.service.chat.mapper.GroupUserMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -53,46 +52,40 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
     }
 
     @Override
-    public List<List<GroupUserVo>> readInMes(String userId) {
+    public List<Map<String, List<GroupUserVo>>> readInMes(String userId) {
         //该用户管理的群
         List<GroupUser> groupUser = groupUserMapper.selectUsersWillIn(userId);
-        List<List<GroupUserVo>> membersVo = groupUser.stream().map(groupUser1 -> {
+        List<Map<String, List<GroupUserVo>>> list = groupUser.stream().map(groupUser1 -> {
 
             String groupId = groupUser1.getGroupId();
             //未审核成员
-            CompletableFuture<List<GroupUserVo>> memberVo = CompletableFuture.supplyAsync(() -> {
-                List<GroupUser> groupUsersNotAck = groupUserMapper.selectUsersNotInThegroupById(groupId);
-                GroupDto groupDto = chatGroupMapper.selectGroupNameById(groupId);
-                List<GroupUserVo> groupUserVos = groupUsersNotAck.stream().map(groupUserNotAck -> {
-                    //创建用户申请vo对象
-                    GroupUserVo groupUserVo = new GroupUserVo();
+            List<GroupUser> groupUsersNotAck = groupUserMapper.selectUsersNotInThegroupById(groupId);
+            GroupDto groupDto = chatGroupMapper.selectGroupNameById(groupId);
+            Map<String, List<GroupUserVo>> hashMap = new ConcurrentHashMap<>();
 
-                    //获取用户信息
-                    String memberId = groupUserNotAck.getMemberId();
-                    R r = ucenterService.readNameAndAvatar(memberId);
-                    MemberChatDto member = (MemberChatDto) r.getData().get("member");
-                    BeanUtils.copyProperties(member, groupUserVo);
-                    groupUserVo.setRemark(groupUserNotAck.getRemark()).setAuth(0);
-                    BeanUtils.copyProperties(groupDto, groupUserVo);
-                    //返回用户申请vo对象
-                    return groupUserVo;
-                }).collect(Collectors.toList());
-                //返回用户申请vo对象列表
-                return groupUserVos;
-            }, executor);
+            List<GroupUserVo> groupUserVos = groupUsersNotAck.stream().map(groupUserNotAck -> {
+                //创建用户申请vo对象
+                GroupUserVo groupUserVo = new GroupUserVo();
 
-            //返回List<GrouUserVo>
-            try {
-                return memberVo.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-            return null;
+                //获取用户信息
+                String memberId = groupUserNotAck.getMemberId();
+                R r = ucenterService.readNameAndAvatar(memberId);
+                MemberChatDto member = (MemberChatDto) r.getData().get("member");
+                BeanUtils.copyProperties(member, groupUserVo);
+                groupUserVo.setRemark(groupUserNotAck.getRemark())
+                        .setAuth(0)
+                        .setId(groupUserNotAck.getId());
+                BeanUtils.copyProperties(groupDto, groupUserVo);
+                //返回用户申请vo对象
+                return groupUserVo;
+            }).collect(Collectors.toList());
+            //返回用户申请vo对象列表
+            hashMap.put(groupId, groupUserVos);
+            return hashMap;
+
         }).collect(Collectors.toList());
 
-        return membersVo;
+        return list;
     }
 
     @Override
@@ -102,6 +95,44 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
         int i = groupUserMapper.insert(groupUser);
         return i;
     }
+
+    @Override
+    public Integer agreeUser(String id, String adminId) {
+        GroupUser groupUser = groupUserMapper.selectUserNotInThegroupById(id);
+        if(groupUser==null||groupUser.getAuth()==0){
+            return 0;
+        }else {
+            groupUser.setVerifyUserId(adminId).setAuth(1);
+            int i = groupUserMapper.updateById(groupUser);
+            return i;
+        }
+    }
+
+    @Override
+    public Integer disagreeUser(String id, String adminId) {
+        GroupUser groupUser = groupUserMapper.selectUserNotInThegroupById(id);
+        if(groupUser==null||groupUser.getAuth()==0){
+            return 1;
+        }else {
+            groupUser.setVerifyUserId(adminId);
+            int i = groupUserMapper.updateById(groupUser);
+            return -i;
+        }
+    }
+
+    @Override
+    public Integer exitGroup(String groupId, Integer type, String memberId, String userId) {
+        if(type == 1){
+            //自己退群
+            int i = groupUserMapper.deleteByGroupIdAndUserId(groupId,userId);
+
+
+        }else{
+            //管理员退群
+        }
+        return null;
+    }
+
 }
 
 
