@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tang.newcloud.service.chat.mapper.FriendRelationshipMapper">
+
+    <resultMap id="BaseResultMap" type="com.tang.newcloud.service.chat.entity.FriendRelationship">
+            <id property="id" column="id" jdbcType="CHAR"/>
+            <result property="userId" column="user_id" jdbcType="CHAR"/>
+            <result property="friendId" column="friend_id" jdbcType="CHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,friend_id,
+        remark,status,gmt_create
+    </sql>
+    <insert id="insertFriend" parameterType="list">
+        insert into friend_relationship(<include refid="Base_Column_List"></include>)
+            values
+        <foreach collection="list" item="i" index="index" separator=",">
+            (#{i.id},#{i.userId},#{i.friendId},#{i.remark},#{i.status},#{i.gmtCreate})
+        </foreach>
+    </insert>
+</mapper>

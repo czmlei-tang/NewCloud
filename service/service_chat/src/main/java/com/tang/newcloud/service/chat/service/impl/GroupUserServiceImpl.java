@@ -37,8 +37,6 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
     @Resource
     private UcenterService ucenterService;
 
-    @Resource
-    private ThreadPoolTaskExecutor executor;
 
     @Override
     public Integer inGroup(String groupId, String userId, String remark) {
@@ -122,15 +120,20 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
 
     @Override
     public Integer exitGroup(String groupId, Integer type, String memberId, String userId) {
+        Integer i =null;
         if(type == 1){
             //自己退群
-            int i = groupUserMapper.deleteByGroupIdAndUserId(groupId,userId);
-
-
+            i = groupUserMapper.deleteByGroupIdAndUserId(groupId,userId);
         }else{
             //管理员退群
+            Integer auth = groupUserMapper.selectAuthByMemberId(userId);
+            Integer auth1 = groupUserMapper.selectAuthByMemberId(memberId);
+            if(auth1>1){
+                i = 0;
+            }
+            i = groupUserMapper.deleteByGroupIdAndUserId(groupId,memberId);
         }
-        return null;
+        return i;
     }
 
 }

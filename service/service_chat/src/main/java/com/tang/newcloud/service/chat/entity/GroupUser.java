@@ -59,6 +59,10 @@ public class GroupUser extends BaseEntity implements Serializable {
      * 入群时间
      */
 //    private Date gmtModified;
+    /**
+     * 是否在线
+     */
+    private Integer status;
 
     /**
      * 0:正常 1：封禁

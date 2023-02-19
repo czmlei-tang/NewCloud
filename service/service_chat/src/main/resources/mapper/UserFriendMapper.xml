@@ -9,12 +9,38 @@
             <result property="fromId" column="from_id" jdbcType="CHAR"/>
             <result property="toId" column="to_id" jdbcType="CHAR"/>
             <result property="status" column="status" jdbcType="INTEGER"/>
+            <result property="checkMessage" column="check_message" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
             <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,from_id,to_id,
-        status,gmt_create,gmt_modified
+        status,check_message,
+        remark,gmt_create,gmt_modified
     </sql>
+    <insert id="insertUserFriend" parameterType="com.tang.newcloud.service.chat.entity.UserFriend">
+        insert into user_friend <include refid="Base_Column_List"></include>
+            values(#{id},#{fromId},#{toId},#{status},#{checkMessage},#{remark},#{gmtCreate},#{gmtModified})
+    </insert>
+    <update id="updateByFromIdAndToId">
+        update user_friend set status #{i} where from_id =# {fromId} and to_id = #{toId}
+    </update>
+    <select id="selectFriendRequest" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+            from user_friend
+                where to_id = #{userId}
+    </select>
+    <select id="selectFriendRequestByFromIdAndToId" resultType="java.lang.Integer">
+        select count(*) from user_friend where from_id = #{userId} and to_id = #{friendId}
+    </select>
+    <select id="selectFriendReponse" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from user_friend
+        where from_id = #{userId}
+    </select>
+    <select id="selectRemarkById" resultType="java.lang.String">
+        select remark from user_friend where from_id =# {fromId} and to_id = #{toId}
+    </select>
 </mapper>

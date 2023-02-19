@@ -20,6 +20,8 @@ public interface GroupUserMapper extends BaseMapper<GroupUser> {
     GroupUser selectUserNotInThegroupById(String id);
 
     int deleteByGroupIdAndUserId(String groupId, String userId);
+
+    Integer selectAuthByMemberId(String userId);
 }
 
 

@@ -14,9 +14,9 @@ public class RedisKeyUtils {
     public static final String MAP_KEY_USER_LIKED_COUNT = "MAP_USER_LIKED_COUNT";
 
     /**
-     * 拼接被点赞的用户id和点赞的人的id作为key。格式 222222::333333
+     * 拼接评论id和点赞的人的id作为key。格式 222222::333333
      *
-     * @param toId   被点赞的人id
+     * @param toId   评论id
      * @param fromId 点赞的人的id
      * @return
      */

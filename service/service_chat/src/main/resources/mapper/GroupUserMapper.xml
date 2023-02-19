@@ -11,6 +11,7 @@
             <result property="verifyUserId" column="verify_user_id" jdbcType="CHAR"/>
             <result property="remark" column="remark" jdbcType="VARCHAR"/>
             <result property="auth" column="auth" jdbcType="INTEGER"/>
+            <result property="status" column="status" jdbcType="INTEGER"/>
             <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
             <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
             <result property="userStatus" column="user_status" jdbcType="INTEGER"/>
@@ -18,10 +19,12 @@
 
     <sql id="Base_Column_List">
         id,member_id,group_id,
-        verify_user_id,remark,auth,
+        verify_user_id,remark,auth,status
         gmt_create,gmt_modified,user_status
     </sql>
-    <delete id="deleteByGroupIdAndUserId"></delete>
+    <delete id="deleteByGroupIdAndUserId">
+        delete from group_user where group_id = #{groupId} and member_id = #{userId}
+    </delete>
     <select id="selectUsersWillIn" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from group_user
             where member_id = #{userId} and auth > 1
@@ -33,5 +36,8 @@
     <select id="selectUserNotInThegroupById" resultMap="BaseResultMap">
         select  <include refid="Base_Column_List"></include> from group_user
             where id = #{id}
+    </select>
+    <select id="selectAuthByMemberId" resultType="java.lang.Integer">
+        select auth from group_user where member_id = #{userId}
     </select>
 </mapper>

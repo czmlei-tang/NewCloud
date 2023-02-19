@@ -70,6 +70,10 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
             wapperMaster.eq(GroupUser::getMemberId,userId)
                     .eq(GroupUser::getGroupId,groupId);
             int a = groupUserMapper.delete(wapperMaster);
+            if(i+a>1){
+                RMap<String, Object> map = redissonClient.getMap(groupId);
+                map.remove("active");
+            }
             return i+a;
 
         }catch (Exception e) {

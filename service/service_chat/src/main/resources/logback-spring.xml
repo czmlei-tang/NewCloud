@@ -2,7 +2,7 @@
 <configuration  scan="true" scanPeriod="10 seconds">
 
     <contextName>logback</contextName>
-    <property name="log.path" value="D:/project/tanglei/newcloud/caht" />
+    <property name="log.path" value="D:/project/tanglei/newcloud/chat" />
 
     <!--控制台日志格式：彩色日志-->
     <!-- magenta:洋红 -->

@@ -76,6 +76,6 @@ public class ApiGroupUserController {
         JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
         String userId = token.getId();
         Integer i = groupUserService.exitGroup(groupId,type,memberId,userId);
-        return i>0?R.ok():R.error();
+        return i>0?R.ok():R.error().message("退群失败");
     }
 }
