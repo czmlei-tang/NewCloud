@@ -13,7 +13,7 @@ import java.io.Serializable;
  **/
 @Data
 @Accessors(chain = true)
-public class FriendVo implements Serializable {
+public class FriendCheckVo implements Serializable {
     private String friendId;
     private String friendName;
     private String avatar;

@@ -7,6 +7,7 @@ import com.tang.newcloud.common.base.util.FormUtils;
 import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.common.base.util.JwtUtils;
 import com.tang.newcloud.common.base.util.MD5;
+import com.tang.newcloud.service.base.dto.FriendDto;
 import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.base.exception.NewCloudException;
@@ -160,6 +161,20 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
     public MemberChatDto getMemberNameAndAvatar(String id) {
         MemberChatDto memberChatDto = memberMapper.selectMemberNameAndAvatar(id);
         return memberChatDto;
+    }
+
+    @Override
+    public FriendDto getFriendParticulars(String friendId) {
+        FriendDto friendDto = memberMapper.selectFriendDtoById(friendId);
+        return friendDto;
+    }
+
+    @Override
+    public Map<String,Object> getFriendAvatar(String id) {
+        HashMap<String, Object> map = new HashMap<>();
+        FriendDto friendDto = memberMapper.selectFriendDtoById(id);
+        map.put("avatar",friendDto.getAvatar());
+        return map;
     }
 }
 

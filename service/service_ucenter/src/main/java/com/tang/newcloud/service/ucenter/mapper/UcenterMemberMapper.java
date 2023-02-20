@@ -1,5 +1,6 @@
 package com.tang.newcloud.service.ucenter.mapper;
 
+import com.tang.newcloud.service.base.dto.FriendDto;
 import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.ucenter.entity.UcenterMember;
@@ -27,6 +28,9 @@ public interface UcenterMemberMapper extends BaseMapper<UcenterMember> {
 
     //群组申请dto
     MemberChatDto selectMemberNameAndAvatar(String id);
+
+    FriendDto selectFriendDtoById(String friendId);
+
 }
 
 

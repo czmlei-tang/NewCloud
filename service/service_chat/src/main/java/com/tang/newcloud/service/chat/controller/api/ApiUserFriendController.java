@@ -3,8 +3,12 @@ package com.tang.newcloud.service.chat.controller.api;
 import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.common.base.util.JwtUtils;
+import com.tang.newcloud.service.base.dto.FriendDto;
 import com.tang.newcloud.service.chat.entity.UserFriend;
-import com.tang.newcloud.service.chat.entity.vo.FriendVo;
+import com.tang.newcloud.service.chat.entity.vo.FriendCheckVo;
+import com.tang.newcloud.service.chat.entity.vo.FriendListVo;
+import com.tang.newcloud.service.chat.feign.UcenterService;
+import com.tang.newcloud.service.chat.service.FriendRelationshipService;
 import com.tang.newcloud.service.chat.service.UserFriendService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +34,12 @@ public class ApiUserFriendController {
     @Resource
     private UserFriendService userFriendService;
 
+    @Resource
+    private FriendRelationshipService relationshipService;
+
+    @Resource
+    private UcenterService ucenterService;
+
     /**
      * //添加好友
      * @param userFriend
@@ -49,11 +59,11 @@ public class ApiUserFriendController {
      * @return
      */
     @ApiOperation("好友添加查询")
-    @GetMapping("auth/read")
+    @GetMapping("auth/read/check/batch")
     public R askForUser(HttpServletRequest request) throws ExecutionException, InterruptedException {
         JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
         String userId = token.getId();
-        List<FriendVo> friendVoList = userFriendService.getFriendRequest(userId);
+        List<FriendCheckVo> friendVoList = userFriendService.getFriendRequest(userId);
         return R.ok().data("friendVoList",friendVoList);
     }
 
@@ -75,6 +85,56 @@ public class ApiUserFriendController {
     }
 
     //删除好友
+    @ApiOperation("删除好友")
+    @DeleteMapping("/auth/remove")
+    public R removeFriend(@ApiParam(value = "好友id",required = true)String friendId,
+                          HttpServletRequest request){
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        String id = token.getId();
+        Integer i = userFriendService.removeFriend(id,friendId);
+        return i==2?R.ok().message("删除成功"):R.error().message("删除失败");
+    }
+
+    /**
+     *
+     * @param friendId
+     * @param request
+     * @return
+     */
+    @ApiOperation("根据id查询好友")
+    @GetMapping("/auth/read/{friendId}")
+    public R readFriendOne(@ApiParam(value = "好友id",required = true)@PathVariable String friendId,
+                           HttpServletRequest request){
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        String userId = token.getId();
+        String remark = userFriendService.getFriendRemark(userId,friendId);
+
+        R r = ucenterService.readFriendParticulars(friendId);
+        FriendDto friendDto = (FriendDto)r.getData().get("friendDto");
+        friendDto.setRemark(remark);
+
+        return R.ok().data("friendDto",friendDto);
+    }
     //查看好友列表
-    //查看指定好友信息
+    @ApiOperation("查询all好友")
+    @GetMapping("/auth/read/friends")
+    public R readFriends(HttpServletRequest request){
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        String userId = token.getId();
+        List<FriendListVo> friends= userFriendService.getFriendRemarks(userId);
+        return R.ok().data("friends",friends);
+    }
+    //修改好友备注
+    @ApiOperation("修改好友备注")
+    @PutMapping("/auth/update/remark")
+    public R changeRemark(@ApiParam(value = "好友id",required = true)String friendId,
+                          @ApiParam(value = "新备注",required = true)String remark,
+                          HttpServletRequest request){
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        String userId = token.getId();
+        Integer i = relationshipService.updateRemark(userId,friendId,remark);
+        return i>0?R.ok().message("修改成功，请返回查看"):R.error().message("修改失败，请稍后再试");
+    }
+
+    //修改头像
 }

@@ -74,6 +74,7 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
                 RMap<String, Object> map = redissonClient.getMap(groupId);
                 map.remove("active");
             }
+            dataSourceTransactionManager.commit(status);
             return i+a;
 
         }catch (Exception e) {

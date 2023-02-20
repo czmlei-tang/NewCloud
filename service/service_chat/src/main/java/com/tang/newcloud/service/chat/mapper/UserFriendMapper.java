@@ -24,6 +24,7 @@ public interface UserFriendMapper extends BaseMapper<UserFriend> {
     Integer updateByFromIdAndToId(String fromId, String toId,Integer i);
 
     String selectRemarkById(String fromId, String toId);
+
 }
 
 

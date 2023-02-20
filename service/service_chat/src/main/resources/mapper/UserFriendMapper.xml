@@ -25,7 +25,7 @@
             values(#{id},#{fromId},#{toId},#{status},#{checkMessage},#{remark},#{gmtCreate},#{gmtModified})
     </insert>
     <update id="updateByFromIdAndToId">
-        update user_friend set status #{i} where from_id =# {fromId} and to_id = #{toId}
+        update user_friend set status = #{i} where from_id =# {fromId} and to_id = #{toId}
     </update>
     <select id="selectFriendRequest" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include>

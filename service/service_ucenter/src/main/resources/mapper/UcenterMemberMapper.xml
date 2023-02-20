@@ -20,6 +20,19 @@
             <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
             <result property="gmtModified" column="gmt_modified" jdbcType="TIMESTAMP"/>
     </resultMap>
+    
+    <resultMap id="friendDtoMap" type="com.tang.newcloud.service.base.dto.FriendDto">
+        <id property="memberId" column="id" jdbcType="CHAR"/>
+        <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+        <result property="openid" column="openid" jdbcType="VARCHAR"/>
+        <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="TINYINT"/>
+        <result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="friend_dto_list">
+        id,nickname,openid,avatar,sex,mobile
+    </sql>
 
     <sql id="Base_Column_List">
         id,openid,mobile,
@@ -47,5 +60,8 @@
     </select>
     <select id="selectMemberNameAndAvatar" resultType="com.tang.newcloud.service.base.dto.MemberChatDto">
         select id as memberId,nickname,avatar from ucenter_member where id = #{id}
+    </select>
+    <select id="selectFriendDtoById" resultMap="friendDtoMap">
+        select <include refid="friend_dto_list"></include> from ucenter_member where id =#{friendId}
     </select>
 </mapper>

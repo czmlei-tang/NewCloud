@@ -1,5 +1,6 @@
 package com.tang.newcloud.service.ucenter.service;
 
+import com.tang.newcloud.service.base.dto.FriendDto;
 import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.ucenter.entity.UcenterMember;
@@ -29,4 +30,8 @@ public interface UcenterMemberService extends IService<UcenterMember> {
     Integer countRegisterNum(String day);
 
     MemberChatDto getMemberNameAndAvatar(String id);
+
+    FriendDto getFriendParticulars(String friendId);
+
+    Map<String,Object> getFriendAvatar(String id);
 }

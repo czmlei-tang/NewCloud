@@ -19,4 +19,16 @@ public class UcenterServiceFallBack implements UcenterService {
         log.info("熔断保护");
         return R.error();
     }
+
+    @Override
+    public R readFriendParticulars(String friendId) {
+        log.info("熔断保护");
+        return R.error();
+    }
+
+    @Override
+    public R readFriendAvatar(String id) {
+        log.info("熔断保护");
+        return R.error();
+    }
 }

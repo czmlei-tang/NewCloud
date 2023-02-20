@@ -24,4 +24,16 @@
             (#{i.id},#{i.userId},#{i.friendId},#{i.remark},#{i.status},#{i.gmtCreate})
         </foreach>
     </insert>
+    <update id="updateByUserIdAndFriendIdAndRemark">
+        update friend_relationship set remark = #{remark} where user_id=#{userId} and friend_id=#{friendId}
+    </update>
+    <delete id="deleteByUserIdAndFriendId">
+        delete from friend_relationship where user_id = #{userId} and friend_id = #{friendId}
+    </delete>
+    <select id="selectRemarkById" resultType="java.lang.String">
+        select remark from friend_relationship where user_id = #{userId} and friend_id = #{friendId}
+    </select>
+    <select id="selectByUserId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from friend_relationship where user_id = #{userId};
+    </select>
 </mapper>

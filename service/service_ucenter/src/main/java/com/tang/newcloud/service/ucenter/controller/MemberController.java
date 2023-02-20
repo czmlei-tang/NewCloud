@@ -1,6 +1,7 @@
 package com.tang.newcloud.service.ucenter.controller;
 
 import com.tang.newcloud.common.base.result.R;
+import com.tang.newcloud.service.base.dto.FriendDto;
 import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.ucenter.service.UcenterMemberService;
@@ -37,5 +38,17 @@ public class MemberController {
     public R readNameAndAvatar(@ApiParam(value = "用户id")@PathVariable String id){
         MemberChatDto member = memberService.getMemberNameAndAvatar(id);
         return member!=null?R.ok().data("member",member):R.error().message("用户不存在");
+    }
+    @ApiOperation(value = "根据id获取好友详情")
+    @GetMapping("/get/friend/{friendId}")
+    public R readFriendParticulars(@ApiParam(value = "用户id",required = true)@PathVariable String friendId){
+        FriendDto friendDto = memberService.getFriendParticulars(friendId);
+        return R.ok().data("friendDto",friendDto);
+    }
+    @ApiOperation(value = "获取avatar")
+    @GetMapping("/get/friend/avatar/{id}")
+    public R readFriendAvatar(@ApiParam(value = "用户id",required = true)@PathVariable String id){
+        Map<String,Object> map= memberService.getFriendAvatar(id);
+        return R.ok().data(map);
     }
 }
