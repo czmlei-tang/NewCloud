@@ -27,16 +27,5 @@ import java.util.List;
 @Slf4j
 public class ArticleControlller {
 
-    @Autowired
-    private ArticleService articleService;
 
-    @ApiOperation("获取分页文章")
-    @GetMapping("list/{page}/{limit}")
-    public R readAllArticle(@ApiParam(value = "当前页码", required = true) @PathVariable Long page,
-                            @ApiParam(value = "每页记录数", required = true) @PathVariable Long limit){
-        IPage articles = articleService.getArticles(page, limit);
-        List records = articles.getRecords();
-        long total = articles.getTotal();
-        return R.ok().data("records",records).data("totel",total);
-    }
 }

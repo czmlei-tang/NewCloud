@@ -91,10 +91,10 @@
         from edu_course
         <where>
             <if test="subjectParentId !=null and subjectParentId !=''">
-                and subject_parent_id=#{subjectParentId}
+                subject_parent_id=#{subjectParentId}
             </if>
             <if test="subjectId !=null and subjectId !=''">
-                and subjectId=#{subjectId}
+                and subject_id=#{subjectId}
             </if>
             <choose>
                 <when test="buyCountSort !=null and buyCountSort !=''">

@@ -4,6 +4,8 @@ import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+
 
 /**
  * @program: NewCloud
@@ -12,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @create: 2023-02-09 23:00
  **/
 @RestController
-@RequestMapping("/user/friend")
+@RequestMapping("/chat/friend")
 @Api(tags = "用户好友")
 public class UserFriendController {
+
 
 }

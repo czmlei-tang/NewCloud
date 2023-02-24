@@ -22,7 +22,7 @@ import java.util.Map;
  * @create: 2023-02-09 22:53
  **/
 @RestController
-@RequestMapping("api/group/user")
+@RequestMapping("api/chat/user")
 @Api(tags = "群成员")
 public class ApiGroupUserController {
 
@@ -67,7 +67,7 @@ public class ApiGroupUserController {
         return i>0?R.ok().message("success"):R.error().message("error");
     }
 
-    @ApiOperation("根据id推出群聊")
+    @ApiOperation("根据id退出群聊")
     @DeleteMapping("auth/exit")
     public R exitGroup(@ApiParam(value = "群id",required = true)String groupId,
                        @ApiParam(value = "退群方式",required = true)Integer type,
@@ -78,4 +78,12 @@ public class ApiGroupUserController {
         Integer i = groupUserService.exitGroup(groupId,type,memberId,userId);
         return i>0?R.ok():R.error().message("退群失败");
     }
+
+    @ApiOperation("查看群组vo")
+    @GetMapping("/auth/active/{groupId}")
+    public R getGroupVo(@ApiParam(value = "群id",required = true)@PathVariable String groupId){
+        Map<String,Object> map = groupUserService.getGroupVo(groupId);
+        return R.ok().data(map);
+    }
+
 }

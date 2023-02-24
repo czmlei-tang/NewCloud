@@ -3,6 +3,7 @@ package com.tang.newcloud.service.chat.service;
 import com.tang.newcloud.service.chat.entity.GroupUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.chat.entity.vo.GroupUserVo;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 import java.util.Map;
@@ -38,4 +39,8 @@ public interface GroupUserService extends IService<GroupUser> {
      * @return
      */
     Integer exitGroup(String groupId, Integer type, String memberId, String userId);
+
+    Map<String, Object> getGroupVo(String groupId);
+
+    Integer updateActive(String groupId);
 }

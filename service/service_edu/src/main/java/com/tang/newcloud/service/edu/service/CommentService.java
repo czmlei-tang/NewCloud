@@ -4,11 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.service.edu.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.tang.newcloud.service.edu.entity.vo.web.WebCommentQueryVo;
-import com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo;
+import com.tang.newcloud.service.edu.entity.vo.web.*;
 
 import java.awt.geom.IllegalPathStateException;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author 29878
@@ -17,9 +17,9 @@ import java.util.List;
 */
 public interface CommentService extends IService<Comment> {
 
-    IPage getCommentList(Long page, Long limit, WebCommentQueryVo webCommentQueryVo);
+    Map getCommentList(Long page, Long limit, WebCommentQueryVo webCommentQueryVo);
 
-    Comment getOneComment(Long id);
+    WebCommentIndexVo getOneComment(Long id);
 
     List<WebCommentVo> getComments(Long parentId);
 
@@ -28,4 +28,10 @@ public interface CommentService extends IService<Comment> {
     Boolean removeCommentById(Long id,String memberId);
 
     Boolean updateGoodNumber(Long id, String loginMemberId);
+
+    List<WebCommentHotVo> getHotComment();
+
+    List<WebCommentTagsVo> getTags();
+
+    WebCommentBestAskVo getBestAsk(Long id);
 }

@@ -34,4 +34,6 @@ public interface UcenterMemberService extends IService<UcenterMember> {
     FriendDto getFriendParticulars(String friendId);
 
     Map<String,Object> getFriendAvatar(String id);
+
+    Integer getActive(String memberId);
 }

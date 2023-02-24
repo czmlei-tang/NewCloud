@@ -6,21 +6,24 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.service.edu.entity.Comment;
-import com.tang.newcloud.service.edu.entity.vo.web.WebCommentQueryVo;
-import com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo;
+import com.tang.newcloud.service.edu.entity.vo.web.*;
+import com.tang.newcloud.service.edu.mapper.SubjectMapper;
 import com.tang.newcloud.service.edu.service.CommentService;
 import com.tang.newcloud.service.edu.mapper.CommentMapper;
 import com.tang.newcloud.service.edu.service.GoodNumberService;
 import com.tang.newcloud.service.edu.util.RedisKeyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
+import java.lang.reflect.MalformedParameterizedTypeException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
 * @author 29878
@@ -40,32 +43,77 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     @Resource
     private GoodNumberService goodNumberService;
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+    @Resource
+    private SubjectMapper subjectMapper;
 
     @Override
-    public IPage getCommentList(Long page, Long limit, WebCommentQueryVo webCommentQueryVo) {
-        String courseId = webCommentQueryVo.getCourseId();
-        Integer answerNumber = webCommentQueryVo.getAnswerNumber();
-        Date gmtCreate = webCommentQueryVo.getGmtCreate();
+    public Map getCommentList(Long page, Long limit, WebCommentQueryVo webCommentQueryVo) {
         Integer watchNumber = webCommentQueryVo.getWatchNumber();
+        Integer gmtCreate = webCommentQueryVo.getGmtCreate();
+        Integer answerNumber = webCommentQueryVo.getAnswerNumber();
+        Integer subjectId = webCommentQueryVo.getSubjectId();
+        HashMap<String, Object> hashMap = new HashMap<>();
 
-        Page<Comment> commentPage = new Page<>();
-        LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Comment::getStatus,1)
-                .eq(courseId!=null,Comment::getCourseId,courseId)
-                .eq(answerNumber!=null,Comment::getAnswerNumber,0)
-                .orderByDesc(watchNumber!=null,Comment::getWatchNumber)
-                .orderByDesc(gmtCreate!=null,Comment::getGmtCreate);
-        Page<Comment> pageInfo = commentMapper.selectPage(commentPage, queryWrapper);
-        return pageInfo;
+        Page<Comment> commentPage = new Page<>(page, limit);
+        LambdaQueryWrapper<Comment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Comment::getStatus,1)
+                .orderByDesc(watchNumber!=null&&watchNumber==1,Comment::getWatchNumber)
+                .eq(answerNumber!=null&&answerNumber==1,Comment::getAnswerNumber,0)
+                .orderByDesc(gmtCreate!=null&&gmtCreate==1,Comment::getGmtCreate)
+                .isNotNull(subjectId!=null&&subjectId==1,Comment::getSubjectId);
+
+        Page<Comment> page1 = baseMapper.selectPage(commentPage, wrapper);
+        List<Comment> records = page1.getRecords();
+        long total = page1.getTotal();
+
+        List<WebCommentIndexVo> collect = records.stream().map(comment -> {
+            WebCommentIndexVo indexVo = new WebCommentIndexVo();
+            BeanUtils.copyProperties(comment, indexVo);
+            String bastAsk = commentMapper.selectOneCommentContentByAnswerId(comment.getId());
+            String tag = subjectMapper.selectSubjectNameById(comment.getSubjectId());
+            if(bastAsk==null||bastAsk==""){
+                bastAsk="暂无";
+            }else if(bastAsk.length()>20){
+                bastAsk=bastAsk.substring(0,20);
+            }
+            indexVo.setBestAsk(bastAsk)
+                    .setTag(tag);
+            return indexVo;
+        }   ).collect(Collectors.toList());
+
+        List<WebCommentHotVo> list = gethot();
+        List<WebCommentTagsVo> taglist = getTags();
+        hashMap.put("total",total);
+        hashMap.put("commentList",collect);
+        hashMap.put("hotComments",list);
+        hashMap.put("tags",taglist);
+        return hashMap;
     }
 
     @Override
-    public Comment getOneComment(Long id) {
+    public List<WebCommentTagsVo> getTags() {
+        return subjectMapper.selectSubjects();
+    }
+
+    @Override
+    public WebCommentBestAskVo getBestAsk(Long id) {
+        WebCommentBestAskVo bestAskVo = new WebCommentBestAskVo();
+        Comment comment = commentMapper.selectIdAndNickName(id);
+        Comment comment1 = commentMapper.selectBestComment(id);
+        bestAskVo.setAnswerId(comment.getId()).setAnswerNickName(comment.getNickname());
+        BeanUtils.copyProperties(comment1,bestAskVo);
+        return bestAskVo;
+    }
+
+    @Override
+    public WebCommentIndexVo getOneComment(Long id) {
         Comment comment = commentMapper.selectOneComment(id);
         commentMapper.updateViewById(id);
-        return comment;
+        WebCommentIndexVo indexVo = new WebCommentIndexVo();
+        BeanUtils.copyProperties(comment, indexVo);
+        String tag = subjectMapper.selectSubjectNameById(comment.getSubjectId());
+        indexVo.setTag(tag);
+        return indexVo;
     }
 
     @Override
@@ -118,6 +166,15 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
             aBoolean = goodNumberService.saveLiked2Redis(goodNumberKey);
         }
         return aBoolean;
+    }
+
+    @Override
+    public List<WebCommentHotVo> getHotComment() {
+        return gethot();
+    }
+
+    private List<WebCommentHotVo> gethot(){
+        return commentMapper.selectHotComments();
     }
 }
 

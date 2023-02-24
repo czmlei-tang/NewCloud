@@ -13,6 +13,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface ChatGroupMapper extends BaseMapper<ChatGroup> {
 
     GroupDto selectGroupNameById(String groupId);
+
+    int updateTotalById(String groupId);
 }
 
 

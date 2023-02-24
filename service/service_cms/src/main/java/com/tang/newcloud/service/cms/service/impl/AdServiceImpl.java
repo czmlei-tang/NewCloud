@@ -61,7 +61,7 @@ public class AdServiceImpl extends ServiceImpl<AdMapper, Ad>
     }
 
     @Override
-    @Cacheable(value = "index", key = "'selectByAdTypeId'")
+    @Cacheable(value = "index", key = "#adTypeId")
     // 这里的value 是该缓存的名称，可以随意写，而key要严格按照查询条件来写，比如这里是查询条件id.
     public List<Ad> selectByAdTypeId(String adTypeId) {
         return adMapper.selectByAdTypeId(adTypeId);

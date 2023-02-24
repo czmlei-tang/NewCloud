@@ -1,9 +1,12 @@
 package com.tang.newcloud.service.chat.component.websocket.father;
 
-import com.tang.newcloud.service.chat.component.websocket.ChatInterface;
+import com.tang.newcloud.service.chat.inter.ChatInterface;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -13,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @description:
  * @version:
  */
+@Component
+@ServerEndpoint("/auth/websocket/{userId}")
+@Slf4j
 public class WebSocket implements ChatInterface {
 
 
@@ -24,45 +30,48 @@ public class WebSocket implements ChatInterface {
     /**
      * 与某个客户端的连接会话，需要通过它来给客户端发送数据
      */
-
     private Session session;
+
     /**
      * 用户id
      */
     private String userId;
 
+    /**
+     * 群组id
+     */
     private String groupID;
 
-    private String toUserId;
+    /**
+     * 群发时非空-》群友id，指定好友发时，好友id
+     */
+    private String friendId;
 
+    /**
+     * 1:群发,2:指定好友发送
+     */
+    private Integer type;
 
-
+    @OnOpen
     @Override
-    public void onOpen(Session session, @PathParam("key") String key) {
-        this.session = session;
-        this.userId = userId;
-        //加入map
-        webSocketMap.put(userId, this);
-//        addOnlineCount();           //在线数加1
-//        log.info("用户{}连接成功,当前在线人数为{}", userId, getOnlineCount());
-//        try {
-//            sendMessage(String.valueOf(this.session.getQueryString()));
-//        } catch (IOException e) {
-//            log.error("IO异常");
-//        }
+    public void onOpen(Session session, @PathParam("userId") String userId) {
+
     }
 
-
+    @OnClose
+    @Override
     public void onClose() {
 
     }
 
-
+    @OnMessage
+    @Override
     public void onMessage(String message, Session session) {
 
     }
 
-
+    @OnError
+    @Override
     public void onError(Session session, Throwable error) {
 
     }

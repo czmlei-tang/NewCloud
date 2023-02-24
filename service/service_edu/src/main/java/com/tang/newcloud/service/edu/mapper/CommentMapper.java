@@ -2,6 +2,7 @@ package com.tang.newcloud.service.edu.mapper;
 
 import com.tang.newcloud.service.edu.entity.Comment;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCommentHotVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo;
 
 import java.util.List;
@@ -23,6 +24,14 @@ public interface CommentMapper extends BaseMapper<Comment> {
     Integer deleteCommentById(Long id);
 
     void updateGoodNumber(Integer i,String id);
+
+    String selectOneCommentContentByAnswerId(String id);
+
+    List<WebCommentHotVo> selectHotComments();
+
+    Comment selectIdAndNickName(Long id);
+
+    Comment selectBestComment(Long id);
 }
 
 

@@ -19,11 +19,6 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class GroupUser extends BaseEntity implements Serializable {
-    /**
-     * id
-     */
-//    @TableId
-//    private String id;
 
     /**
      * 会员id
@@ -49,21 +44,10 @@ public class GroupUser extends BaseEntity implements Serializable {
      * 0:普通 1:管理员，2：群主
      */
     private Integer auth;
-
     /**
-     * 创建时间
-     */
-//    private Date gmtCreate;
-
-    /**
-     * 入群时间
-     */
-//    private Date gmtModified;
-    /**
-     * 是否在线
+     * 0:掉线
      */
     private Integer status;
-
     /**
      * 0:正常 1：封禁
      */

@@ -27,6 +27,9 @@
         introduce,group_master_id,notice,
         in_type,total,gmt_create,status
     </sql>
+    <update id="updateTotalById">
+        update total where id
+    </update>
 
     <select id="selectGroupNameById" resultMap="selectGroupIdAndName">
         select id,name from chat_group where id = #{groupId}

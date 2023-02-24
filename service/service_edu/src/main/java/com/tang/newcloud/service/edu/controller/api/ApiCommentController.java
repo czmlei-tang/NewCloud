@@ -6,8 +6,7 @@ import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.common.base.util.JwtUtils;
 import com.tang.newcloud.service.edu.entity.Comment;
 import com.tang.newcloud.service.edu.entity.vo.TeacherQueryVo;
-import com.tang.newcloud.service.edu.entity.vo.web.WebCommentQueryVo;
-import com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo;
+import com.tang.newcloud.service.edu.entity.vo.web.*;
 import com.tang.newcloud.service.edu.service.CommentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program: NewCloud
@@ -43,17 +43,18 @@ public class ApiCommentController {
     public R readQuestions(@ApiParam(value = "当前页码", required = true) @PathVariable Long page,
                            @ApiParam(value = "每页记录数", required = true) @PathVariable Long limit,
                            @ApiParam(value ="问答查询对象")WebCommentQueryVo webCommentQueryVo){
-        IPage commentList = commentService.getCommentList(page, limit, webCommentQueryVo);
-        List commentRecords = commentList.getRecords();
-        long commentTotal = commentList.getTotal();
-        return R.ok().data("commentRecords",commentRecords).data("commentTotal",commentTotal);
+        Map<String,Object> commentList= commentService.getCommentList(page, limit, webCommentQueryVo);
+        return R.ok().data(commentList);
     }
 
     @ApiOperation("根据id获取问答")
     @GetMapping("/get/{id}")
     public R readOneQuestion(@ApiParam(value = "问题id",required = true)@PathVariable Long id){
-        Comment comment=commentService.getOneComment(id);
-        return R.ok().data("comment",comment);
+        WebCommentIndexVo comment=commentService.getOneComment(id);
+        List<WebCommentHotVo> hotComment = commentService.getHotComment();
+        List<WebCommentTagsVo> list = commentService.getTags();
+        WebCommentBestAskVo bestAskVo = commentService.getBestAsk(id);
+        return R.ok().data("comment",comment).data("hotCommentList",hotComment).data("tags",list).data("bestAskVo",bestAskVo);
     }
 
     @ApiOperation("获取嵌套评论")
@@ -94,5 +95,6 @@ public class ApiCommentController {
         Boolean isOK = commentService.updateGoodNumber(id,loginMemberId);
         return isOK?R.ok().message("点赞爆棚"):R.error().message("不能重复点赞");
     }
+
 
 }

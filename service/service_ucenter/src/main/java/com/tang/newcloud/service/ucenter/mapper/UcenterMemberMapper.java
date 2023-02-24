@@ -31,6 +31,9 @@ public interface UcenterMemberMapper extends BaseMapper<UcenterMember> {
 
     FriendDto selectFriendDtoById(String friendId);
 
+    void updateStatus(int type,String id);
+
+    Integer selectStatusByMemberId(String memberId);
 }
 
 

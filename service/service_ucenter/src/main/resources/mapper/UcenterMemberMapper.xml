@@ -15,6 +15,7 @@
             <result property="age" column="age" jdbcType="TINYINT"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="sign" column="sign" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
             <result property="isDisabled" column="is_disabled" jdbcType="TINYINT"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
             <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
@@ -37,10 +38,13 @@
     <sql id="Base_Column_List">
         id,openid,mobile,
         password,nickname,sex,mail,
-        age,avatar,sign,
+        age,avatar,sign,status,
         is_disabled,is_deleted,gmt_create,
         gmt_modified
     </sql>
+    <update id="updateStatus">
+        update ucenter_member set status=#{type} where id =#{id}
+    </update>
     <select id="selectMemberCount" resultType="java.lang.Integer">
         select count(*) from ucenter_member where nickname=#{nickname} and mobile=#{mobile}
     </select>
@@ -63,5 +67,8 @@
     </select>
     <select id="selectFriendDtoById" resultMap="friendDtoMap">
         select <include refid="friend_dto_list"></include> from ucenter_member where id =#{friendId}
+    </select>
+    <select id="selectStatusByMemberId" resultType="java.lang.Integer">
+        select status from ucenter_member where id = #{memberId}
     </select>
 </mapper>

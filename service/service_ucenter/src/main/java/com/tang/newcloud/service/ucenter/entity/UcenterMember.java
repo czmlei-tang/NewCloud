@@ -66,6 +66,11 @@ public class UcenterMember extends BaseEntity implements Serializable {
     private String sign;
 
     /**
+     * 0不在线 1在线
+     */
+    private Integer status;
+
+    /**
      * 是否禁用 1（true）已禁用，  0（false）未禁用
      */
     private Integer isDisabled;

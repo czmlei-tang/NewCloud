@@ -22,6 +22,9 @@
         verify_user_id,remark,auth,status
         gmt_create,gmt_modified,user_status
     </sql>
+    <update id="updateStatusById">
+        update group_user set status = #{status} where id = #{id}
+    </update>
     <delete id="deleteByGroupIdAndUserId">
         delete from group_user where group_id = #{groupId} and member_id = #{userId}
     </delete>
@@ -39,5 +42,11 @@
     </select>
     <select id="selectAuthByMemberId" resultType="java.lang.Integer">
         select auth from group_user where member_id = #{userId}
+    </select>
+    <select id="selectAllGroupUser" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from group_user where member_id =#{userId}
+    </select>
+    <select id="selectAllGroupUserByGroupId" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from group_user where group_id = #{groupId}
     </select>
 </mapper>

@@ -27,8 +27,8 @@ public class Comment extends BaseEntity implements Serializable {
     /**
      * 课程id
      */
-    @ApiModelProperty(value = "课程id")
-    private String courseId;
+    @ApiModelProperty(value = "类别id")
+    private String subjectId;
 
     /**
      * 讲师id

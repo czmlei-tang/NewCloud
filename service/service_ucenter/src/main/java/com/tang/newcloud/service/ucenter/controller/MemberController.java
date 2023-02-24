@@ -51,4 +51,10 @@ public class MemberController {
         Map<String,Object> map= memberService.getFriendAvatar(id);
         return R.ok().data(map);
     }
+    @GetMapping("/get/active/{memberId}")
+    public R readActive(@PathVariable String memberId){
+        Integer i = memberService.getActive(memberId);
+        return R.ok().data("status",i);
+    }
+
 }

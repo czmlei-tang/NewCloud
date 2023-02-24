@@ -22,6 +22,12 @@ public interface GroupUserMapper extends BaseMapper<GroupUser> {
     int deleteByGroupIdAndUserId(String groupId, String userId);
 
     Integer selectAuthByMemberId(String userId);
+
+    List<GroupUser> selectAllGroupUser(String userId);
+
+    List<GroupUser> selectAllGroupUserByGroupId(String groupId);
+
+    Integer updateStatusById(String id, Integer status);
 }
 
 

@@ -6,7 +6,7 @@
 
     <resultMap id="BaseResultMap" type="com.tang.newcloud.service.edu.entity.Comment">
             <id property="id" column="id" jdbcType="CHAR"/>
-            <result property="courseId" column="course_id" jdbcType="CHAR"/>
+            <result property="subjectId" column="subject_id" jdbcType="CHAR"/>
             <result property="teacherId" column="teacher_id" jdbcType="CHAR"/>
             <result property="memberId" column="member_id" jdbcType="CHAR"/>
             <result property="answerId" column="answer_id" jdbcType="CHAR"/>
@@ -38,7 +38,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,course_id,teacher_id,
+        id,subject_id,teacher_id,
         member_id,answer_id,nickname,
         avatar,good_number,answer_number,
         watch_number,status,content,
@@ -67,6 +67,20 @@
             <include refid="Web_Comment_Map"></include>
                 from edu_comment a left join edu_comment b on a.answer_id = b.id
                     where a.answer_id=#{parentId} order by gmt_create desc
+    </select>
+    <select id="selectOneCommentContentByAnswerId" resultType="java.lang.String">
+        select content from edu_comment where answer_id = #{id} order by good_number desc limit 1
+    </select>
+    <select id="selectHotComments" resultType="com.tang.newcloud.service.edu.entity.vo.web.WebCommentHotVo">
+        select id,content,answer_number as answerNumber from edu_comment where status =1
+        order by answer_number desc limit 8
+    </select>
+    <select id="selectIdAndNickName" resultType="com.tang.newcloud.service.edu.entity.Comment">
+        select id,nickname from edu_comment where id = #{id}
+    </select>
+    <select id="selectBestComment" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from edu_comment where answer_id =#{id} order by good_number desc limit 1
     </select>
 
 </mapper>

@@ -23,6 +23,7 @@ public class ApiAdController {
     public R listByAdTypeId(@ApiParam(value = "推荐位id", required = true) @PathVariable String adTypeId) {
 
         List<Ad> ads = adService.selectByAdTypeId(adTypeId);
+        System.out.println(ads);
         return R.ok().data("items", ads);
     }
 }

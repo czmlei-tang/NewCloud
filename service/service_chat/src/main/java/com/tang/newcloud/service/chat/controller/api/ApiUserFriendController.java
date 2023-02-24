@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
  * @create: 2023-02-09 23:00
  **/
 @RestController
-@RequestMapping("api/user/friend")
+@RequestMapping("api/chat/friend")
 @Api(tags = "用户好友")
 public class ApiUserFriendController {
 

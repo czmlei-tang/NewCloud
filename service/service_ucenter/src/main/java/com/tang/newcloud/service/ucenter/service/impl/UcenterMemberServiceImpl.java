@@ -107,6 +107,8 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         //核对账户有效性
         if(member.getIsDisabled()==1)
             throw new NewCloudException(ResultCodeEnum.LOGIN_DISABLED_ERROR);
+        int type =1;
+        memberMapper.updateStatus(type,member.getId());
 
 //        StringBuffer buffer = new StringBuffer();
 //        buffer.append(member.getNickname());
@@ -176,6 +178,14 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         map.put("avatar",friendDto.getAvatar());
         return map;
     }
+
+    @Override
+    public Integer getActive(String memberId) {
+        Integer i = memberMapper.selectStatusByMemberId(memberId);
+        return i;
+    }
+
+
 }
 
 

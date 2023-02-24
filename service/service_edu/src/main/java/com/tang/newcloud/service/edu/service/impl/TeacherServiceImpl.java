@@ -114,7 +114,7 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherMapper, Teacher> impl
 
     @Override
     // 这里的value 是该缓存的名称，可以随意写，而key要严格按照查询条件来写，比如这里是查询条件id.
-    @Cacheable(value = "index", key = "'selectHotTeacher'")
+    @Cacheable(value = "index", key = "'hotTeacher'")
     public List<Teacher> selectHotTeacher() {
         return teacherMapper.selectFourHotTeacher();
     }

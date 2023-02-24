@@ -55,3 +55,7 @@ spring:
           uri: lb://service-statistics
           predicates:
             - Path=/*/statistics/**
+        - id: service-chat
+          uri: lb://service-chat
+          predicates:
+            - Path=/*/chat/**

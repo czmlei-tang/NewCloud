@@ -8,6 +8,7 @@ import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.common.base.util.JwtUtils;
 import com.tang.newcloud.service.base.exception.NewCloudException;
 import com.tang.newcloud.service.ucenter.entity.UcenterMember;
+import com.tang.newcloud.service.ucenter.mapper.UcenterMemberMapper;
 import com.tang.newcloud.service.ucenter.service.UcenterMemberService;
 import com.tang.newcloud.service.ucenter.util.UcenterProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -35,6 +37,9 @@ public class ApiWxController {
 
     @Autowired
     private UcenterMemberService memberService;
+
+    @Resource
+    private UcenterMemberMapper ucenterMemberMapper;
 
     @GetMapping("login")
     public String genQrConnect(HttpSession session){
@@ -169,8 +174,10 @@ public class ApiWxController {
             member.setNickname(nickname);
             member.setAvatar(headimgurl);
             member.setSex(sex.intValue());
+            member.setStatus(1);
             memberService.saveWechatMember(member);
         }
+        ucenterMemberMapper.updateStatus(1,ucenterMember.getId());
         JwtInfo jwtInfo = new JwtInfo();
         jwtInfo.setId(ucenterMember.getId());
         jwtInfo.setNickname(ucenterMember.getNickname());

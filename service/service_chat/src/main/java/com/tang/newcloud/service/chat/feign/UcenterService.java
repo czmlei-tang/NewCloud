@@ -19,4 +19,7 @@ public interface UcenterService {
 
     @GetMapping("/admin/ucenter/member/get/friend/avatar/{id}")
     R readFriendAvatar(@PathVariable String id);
+
+    @GetMapping("/admin/ucenter/member/get/active/{memberId}")
+    R readActive(@PathVariable String memberId);
 }

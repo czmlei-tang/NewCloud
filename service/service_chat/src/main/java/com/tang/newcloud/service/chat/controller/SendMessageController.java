@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author: tanglei
  * @create: 2023-02-09 22:59
  **/
-@RequestMapping("/send/message")
+@RequestMapping("/chat/send")
 @RestController
 @Api(tags = "消息")
 public class SendMessageController {

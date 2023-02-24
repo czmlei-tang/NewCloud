@@ -14,5 +14,11 @@
     <select id="selectNestedListByParentId" resultMap="nestedSubject">
         select id, sort, title from edu_subject where parent_id = #{parentId}
     </select>
+    <select id="selectSubjectNameById" resultType="java.lang.String">
+        select title from edu_subject where id=#{subjectId}
+    </select>
+    <select id="selectSubjects" resultType="com.tang.newcloud.service.edu.entity.vo.web.WebCommentTagsVo">
+        select id,title from edu_subject limit 20
+    </select>
 
 </mapper>

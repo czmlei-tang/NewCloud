@@ -31,4 +31,10 @@ public class UcenterServiceFallBack implements UcenterService {
         log.info("熔断保护");
         return R.error();
     }
+
+    @Override
+    public R readActive(String memberId) {
+        log.info("熔断保护");
+        return R.error();
+    }
 }

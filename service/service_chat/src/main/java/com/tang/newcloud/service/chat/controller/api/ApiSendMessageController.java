@@ -13,7 +13,7 @@ import javax.annotation.Resource;
  * @author: tanglei
  * @create: 2023-02-09 22:59
  **/
-@RequestMapping("api/send/message")
+@RequestMapping("api/chat/send")
 @RestController
 @Api(tags = "消息")
 public class ApiSendMessageController {

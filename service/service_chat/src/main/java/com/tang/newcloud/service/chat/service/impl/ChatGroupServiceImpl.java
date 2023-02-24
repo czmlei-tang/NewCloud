@@ -51,6 +51,8 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
         if(i>0){
             RMap<String, Object> map = redissonClient.getMap(groupId);
             map.put("active",1);
+            map.put("groupName",chatGroup.getName());
+            map.put("total",1);
         }
         return i>0?groupId:null;
     }
@@ -73,6 +75,8 @@ public class ChatGroupServiceImpl extends ServiceImpl<ChatGroupMapper, ChatGroup
             if(i+a>1){
                 RMap<String, Object> map = redissonClient.getMap(groupId);
                 map.remove("active");
+                map.remove("groupName");
+                map.remove("total");
             }
             dataSourceTransactionManager.commit(status);
             return i+a;

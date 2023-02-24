@@ -21,8 +21,8 @@ public class WebCommentQueryVo {
     /**
      * 课程id
      */
-    @ApiModelProperty(value = "课程id")
-    private String courseId;
+    @ApiModelProperty(value = "类别id")
+    private Integer subjectId;
 
 
     /**
@@ -41,5 +41,7 @@ public class WebCommentQueryVo {
      * 创建时间
      */
     @ApiModelProperty(value = "创建时间")
-    private Date gmtCreate;
+    private Integer gmtCreate;
+
+
 }

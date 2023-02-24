@@ -10,14 +10,17 @@ import com.tang.newcloud.service.chat.feign.UcenterService;
 import com.tang.newcloud.service.chat.mapper.ChatGroupMapper;
 import com.tang.newcloud.service.chat.service.GroupUserService;
 import com.tang.newcloud.service.chat.mapper.GroupUserMapper;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +39,9 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
 
     @Resource
     private UcenterService ucenterService;
+
+    @Resource
+    private RedissonClient redissonClient;
 
 
     @Override
@@ -89,7 +95,7 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
     @Override
     public Integer savaMaster(String groupId,String userId) {
         GroupUser groupUser = new GroupUser();
-        groupUser.setGroupId(groupId).setMemberId(userId).setAuth(3);
+        groupUser.setGroupId(groupId).setMemberId(userId).setAuth(3).setStatus(1);
         int i = groupUserMapper.insert(groupUser);
         return i;
     }
@@ -97,11 +103,15 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
     @Override
     public Integer agreeUser(String id, String adminId) {
         GroupUser groupUser = groupUserMapper.selectUserNotInThegroupById(id);
+        String groupId = groupUser.getGroupId();
         if(groupUser==null||groupUser.getAuth()==0){
             return 0;
         }else {
             groupUser.setVerifyUserId(adminId).setAuth(1);
             int i = groupUserMapper.updateById(groupUser);
+            //只对缓存同步，数据库交给定时任务
+            RMap<String, Object> map = redissonClient.getMap(groupId);
+            map.put("total",(Integer)map.get("total")+1);
             return i;
         }
     }
@@ -128,13 +138,51 @@ public class GroupUserServiceImpl extends ServiceImpl<GroupUserMapper, GroupUser
             //管理员退群
             Integer auth = groupUserMapper.selectAuthByMemberId(userId);
             Integer auth1 = groupUserMapper.selectAuthByMemberId(memberId);
-            if(auth1>1){
+            if(auth<=auth1){
                 i = 0;
             }
             i = groupUserMapper.deleteByGroupIdAndUserId(groupId,memberId);
         }
+        if(i>0){
+            RMap<String, Object> map = redissonClient.getMap(groupId);
+            map.put("total",(Integer)map.get("total")-1);
+        }
         return i;
     }
+
+    @Override
+    public Map<String, Object> getGroupVo(String groupId) {
+        HashMap<String, Object> map = new HashMap<>();
+        RMap<String, Object> rMap = redissonClient.getMap(groupId);
+        String groupName = (String)rMap.get("groupName");
+        Integer total = (Integer)rMap.get("total");
+        Integer active = (Integer)rMap.get("active");
+        map.put("groupName",groupName);
+        map.put("total",total);
+        map.put("active",active);
+        map.put("groupId",groupId);
+        return map;
+    }
+
+    @Override
+    public Integer updateActive(String groupId) {
+        AtomicInteger atomicInteger = new AtomicInteger(0);
+        List<GroupUser> list = groupUserMapper.selectAllGroupUserByGroupId(groupId);
+        list.stream().forEach(u->{
+            String id = u.getId();
+            String memberId = u.getMemberId();
+            R r = ucenterService.readActive(memberId);
+            Integer status = (Integer)r.getData().get("status");
+            Integer i = groupUserMapper.updateStatusById(id,status);
+            if(i>0){
+                atomicInteger.getAndIncrement();
+            }
+        });
+        RMap<String, Object> map = redissonClient.getMap(groupId);
+        map.put("active",atomicInteger.get());
+        return atomicInteger.get();
+    }
+
 
 }
 
