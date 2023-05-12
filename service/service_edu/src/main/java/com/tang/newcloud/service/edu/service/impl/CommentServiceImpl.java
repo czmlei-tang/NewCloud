@@ -1,10 +1,10 @@
 package com.tang.newcloud.service.edu.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tang.newcloud.common.base.util.JwtInfo;
+import com.tang.newcloud.common.base.util.JwtUtils;
 import com.tang.newcloud.service.edu.entity.Comment;
 import com.tang.newcloud.service.edu.entity.vo.web.*;
 import com.tang.newcloud.service.edu.mapper.SubjectMapper;
@@ -12,17 +12,18 @@ import com.tang.newcloud.service.edu.service.CommentService;
 import com.tang.newcloud.service.edu.mapper.CommentMapper;
 import com.tang.newcloud.service.edu.service.GoodNumberService;
 import com.tang.newcloud.service.edu.util.RedisKeyUtils;
-import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RBucket;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.lang.reflect.MalformedParameterizedTypeException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -65,7 +66,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         Page<Comment> page1 = baseMapper.selectPage(commentPage, wrapper);
         List<Comment> records = page1.getRecords();
         long total = page1.getTotal();
-
+        if(total%limit==0){
+            total=total/limit;
+        }else total=total/limit+1;
         List<WebCommentIndexVo> collect = records.stream().map(comment -> {
             WebCommentIndexVo indexVo = new WebCommentIndexVo();
             BeanUtils.copyProperties(comment, indexVo);
@@ -96,40 +99,173 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
     }
 
     @Override
-    public WebCommentBestAskVo getBestAsk(Long id) {
+    public WebCommentBestAskVo getBestAsk(Long id, HttpServletRequest request) {
         WebCommentBestAskVo bestAskVo = new WebCommentBestAskVo();
-        Comment comment = commentMapper.selectIdAndNickName(id);
+
+        //如果用户登录，会判断一下点赞状态
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
         Comment comment1 = commentMapper.selectBestComment(id);
-        bestAskVo.setAnswerId(comment.getId()).setAnswerNickName(comment.getNickname());
-        BeanUtils.copyProperties(comment1,bestAskVo);
+        if(comment1!=null){
+            Comment comment = commentMapper.selectIdAndNickName(id);
+            bestAskVo.setAnswerId(comment.getId()).setAnswerNickName(comment.getNickname());
+            BeanUtils.copyProperties(comment1,bestAskVo);
+
+            //拼入总数
+            RBucket<Long> totalBucket = redissonClient.getBucket(bestAskVo.getId());
+            Long total = totalBucket.get();
+            if(total!=null&&total!=0){
+                bestAskVo.setGoodNumber(total);
+            }else{
+                bestAskVo.setGoodNumber(0L);
+            }
+
+            if(token!=null){
+
+                String userId = token.getId();
+                String goodNumberKey = RedisKeyUtils.getGoodNumberKey(String.valueOf(id), userId);
+                RMap<String, Object> map = redissonClient.getMap(goodNumberKey);
+                Integer status = (Integer)map.get("status");
+                if(status==1){
+                    bestAskVo.setGoodStatus(1);
+                }else{
+                    bestAskVo.setGoodStatus(0);
+                }
+            }else{
+                bestAskVo.setGoodStatus(0);
+            }
+        }else{
+
+        }
         return bestAskVo;
     }
 
+
     @Override
-    public WebCommentIndexVo getOneComment(Long id) {
+    public List<WebCommentVo> getSecondDataComments(Long parentId,HttpServletRequest request) {
+        //如果用户登录，会判断一下点赞状态
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        List<WebCommentVo> webCommentVos = commentMapper.selectSecondComments(parentId);
+        if(token!=null){
+            String userId = token.getId();
+            List<WebCommentVo> commentVos = webCommentVos.stream().map(webCommentVo -> {
+                String goodNumberKey = RedisKeyUtils.getGoodNumberKey(webCommentVo.getId(), userId);
+
+                //拼入总数
+                RBucket<Long> totalBucket = redissonClient.getBucket(webCommentVo.getId());
+                Long total = totalBucket.get();
+                if(total!=null&&total!=0){
+                    webCommentVo.setGoodNumber(total);
+                }else{
+                    webCommentVo.setGoodNumber(0L);
+                }
+
+                RMap<String, Object> map = redissonClient.getMap(goodNumberKey);
+                Integer status = (Integer) map.get("status");
+                if (status==null||status == 0) {
+                    webCommentVo.setGoodStatus(0);
+                } else {
+                    webCommentVo.setGoodStatus(1);
+                }
+                return webCommentVo;
+            }).collect(Collectors.toList());
+            return commentVos;
+        }else{
+            webCommentVos.stream().forEach(i->{
+                i.setGoodStatus(0);
+            });
+            return webCommentVos;
+        }
+
+    }
+
+    @Override
+    public WebCommentIndexVo getOneComment(Long id,HttpServletRequest request) {
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
         Comment comment = commentMapper.selectOneComment(id);
+        //watchnumber+1
         commentMapper.updateViewById(id);
+
         WebCommentIndexVo indexVo = new WebCommentIndexVo();
         BeanUtils.copyProperties(comment, indexVo);
         String tag = subjectMapper.selectSubjectNameById(comment.getSubjectId());
         indexVo.setTag(tag);
+        //拼入总数
+        RBucket<Long> totalBucket = redissonClient.getBucket(String.valueOf(id));
+        Long total = totalBucket.get();
+        if(total!=null&&total!=0){
+            indexVo.setGoodNumber(total);
+        }else{
+            indexVo.setGoodNumber(0L);
+        }
+        if(token!=null){
+            String userId = token.getId();
+            String key = RedisKeyUtils.getGoodNumberKey(String.valueOf(id), userId);
+            RMap<String, Object> map = redissonClient.getMap(key);
+            Integer status = (Integer) map.get("status");
+            if (status==null||status == 0) {
+                indexVo.setGoodStatus(0);
+            } else {
+                indexVo.setGoodStatus(1);
+            }
+        }else{
+            indexVo.setGoodStatus(0);
+        }
         return indexVo;
     }
 
+    /**
+     * 2 流 递归
+     * @param parentId
+     * @return
+     */
     @Override
-    public List<WebCommentVo> getComments(Long parentId) {
-        List<WebCommentVo> commentVos = commentMapper.selectComments(parentId);
-        return commentVos;
+    public List<WebCommentVo> getComments(Long parentId,HttpServletRequest request) {
+        //一级数据
+        //如果用户登录，会判断一下点赞状态
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        List<WebCommentVo> webCommentVos = commentMapper.selectComments(parentId);
+        if(token!=null) {
+            String userId = token.getId();
+            List<WebCommentVo> commentVos = webCommentVos.stream().map(webCommentVo -> {
+                String goodNumberKey = RedisKeyUtils.getGoodNumberKey(webCommentVo.getId(), userId);
+                //拼入总数
+                RBucket<Long> totalBucket = redissonClient.getBucket(webCommentVo.getId());
+                Long total = totalBucket.get();
+                if(total!=null&&total!=0){
+                    webCommentVo.setGoodNumber(total);
+                }else{
+                    webCommentVo.setGoodNumber(0L);
+                }
+                RMap<String, Object> map = redissonClient.getMap(goodNumberKey);
+                Integer status = (Integer) map.get("status");
+                if (status==null||status == 0) {
+                    webCommentVo.setGoodStatus(0);
+                } else {
+                    webCommentVo.setGoodStatus(1);
+                }
+                return webCommentVo;
+            }).collect(Collectors.toList());
+            return commentVos;
+        }else{
+            webCommentVos.forEach(webCommentVo -> webCommentVo.setGoodStatus(0));
+            return webCommentVos;
+        }
+
     }
 
     @Override
+    @Transactional
     public Boolean saveComment(Comment comment, JwtInfo jwtInfo) {
         String id = jwtInfo.getId();
         String avatar = jwtInfo.getAvatar();
         String nickname = jwtInfo.getNickname();
         comment.setMemberId(id).setAvatar(avatar).setNickname(nickname);
         int i = commentMapper.insert(comment);
-        return i>0?true:false;
+        if(comment.getStatus()==0){
+            String answerId = comment.getAnswerId();
+            commentMapper.increaseAnswerNumber(answerId);
+        }
+        return i > 0;
     }
 
     @Override
@@ -138,7 +274,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         boolean b = comment.getMemberId().equals(memberId);
         if(b){
             Integer i = commentMapper.deleteCommentById(id);
-            return i>0?true:false;
+            return i > 0;
         }
         return false;
     }
@@ -156,13 +292,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment>
         //redisson第一次自行创建
         String goodNumberKey = RedisKeyUtils.getGoodNumberKey(id.toString(), loginMemberId);
         RMap<Object, Object> map = redissonClient.getMap(goodNumberKey);
-        Object status = map.get("status");
+        Integer status = (Integer) map.get("status");
         //有就取消点赞
         //没有就点赞
         Boolean aBoolean =false;
-        if(status!=null||!status.equals(0)){
+        if(status!=null&&status!=0){
             aBoolean = goodNumberService.unlikeFromRedis(goodNumberKey);
-        } else {
+        }else{
             aBoolean = goodNumberService.saveLiked2Redis(goodNumberKey);
         }
         return aBoolean;

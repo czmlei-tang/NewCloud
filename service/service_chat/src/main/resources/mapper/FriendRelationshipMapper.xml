@@ -36,4 +36,7 @@
     <select id="selectByUserId" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from friend_relationship where user_id = #{userId};
     </select>
+    <select id="selectFriendId" resultType="java.lang.String">
+        select friend_id from friend_relationship where user_id = #{id}
+    </select>
 </mapper>

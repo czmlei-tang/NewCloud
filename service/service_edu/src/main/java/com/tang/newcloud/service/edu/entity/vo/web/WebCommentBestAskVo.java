@@ -22,6 +22,7 @@ public class WebCommentBestAskVo implements Serializable {
     private String answerNickName;
     private String content;
     private Integer answerNumber;
-    private Integer goodNumber;
+    private Long goodNumber;
     private Date gmtCreate;
+    private Integer goodStatus;
 }

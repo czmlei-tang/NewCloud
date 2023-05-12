@@ -1,24 +1,6 @@
 server:
   tomcat:
-    max-threads: 10
-spring:
-  cache:
-    type: redis
-  #spring:
-  jackson: #返回json的全局时间格式
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/newcloud?serverTimezone=GMT%2B8
-    username: root
-    password: 5201314
-  rabbitmq:
-    virtual-host: newcloud
-    host: 43.143.129.182
-    username: tanglei
-    password: 5201314
-
+    max-threads: 100
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -26,7 +8,7 @@ mybatis-plus:
 # 设置日志级别
 logging:
   level:
-    root: ERROR
+    root: info
     com.tang.newcloud.service.edu.feign.OssFileService: debug
 
 ribbon:

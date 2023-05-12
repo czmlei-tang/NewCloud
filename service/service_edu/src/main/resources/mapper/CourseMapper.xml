@@ -96,25 +96,25 @@
             <if test="subjectId !=null and subjectId !=''">
                 and subject_id=#{subjectId}
             </if>
-            <choose>
-                <when test="buyCountSort !=null and buyCountSort !=''">
-                    order by buy_count desc
-                </when>
-                <when test="gmtCreateSort !=null and gmtCreateSort !=''">
-                    order by gmt_create desc
-                </when>
-                <when test="priceSort !=null and priceSort !=''">
-                    <choose>
-                        <when test="type == 2">
-                            order by price asc
-                        </when>
-                        <otherwise>
-                            order by price desc
-                        </otherwise>
-                    </choose>
-                </when>
-            </choose>
         </where>
+        <choose>
+            <when test="buyCountSort !=null and buyCountSort !=''">
+                order by buy_count desc
+            </when>
+            <when test="gmtCreateSort !=null and gmtCreateSort !=''">
+                order by gmt_create desc
+            </when>
+            <when test="priceSort !=null and priceSort !=''">
+                <choose>
+                    <when test="type == 2">
+                        order by price asc
+                    </when>
+                    <otherwise>
+                        order by price desc
+                    </otherwise>
+                </choose>
+            </when>
+        </choose>
     </select>
     <select id="selectWebCourseVoById" resultType="com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo">
         SELECT
@@ -151,6 +151,9 @@
     </select>
     <select id="selectByCourseId" resultType="com.tang.newcloud.service.edu.entity.Course">
         select id,teacher_id as teacherId,title,price,cover from edu_course where id=#{courseId}
+    </select>
+    <select id="selectNames" resultType="java.lang.String">
+        select title from edu_course where title like "%"#{course}"%"
     </select>
 
 </mapper>

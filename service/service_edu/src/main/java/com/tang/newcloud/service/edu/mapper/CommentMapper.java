@@ -32,6 +32,10 @@ public interface CommentMapper extends BaseMapper<Comment> {
     Comment selectIdAndNickName(Long id);
 
     Comment selectBestComment(Long id);
+
+    List<WebCommentVo> selectSecondComments(Long id);
+
+    void increaseAnswerNumber(String answerId);
 }
 
 

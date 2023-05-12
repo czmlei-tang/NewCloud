@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -270,5 +271,12 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
                 ids) {
             videoService.removeMediaVideosById(i);
         }
+    }
+
+    @Override
+    public List<String> getCourses(String course) {
+        List<String> courses = courseMapper.selectNames(course);
+        List<String> collect = courses.stream().distinct().collect(Collectors.toList());
+        return collect;
     }
 }

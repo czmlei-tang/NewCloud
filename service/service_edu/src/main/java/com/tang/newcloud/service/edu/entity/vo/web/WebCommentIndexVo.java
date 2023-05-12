@@ -41,9 +41,9 @@ public class WebCommentIndexVo implements Serializable {
     private String content;
 
     /**
-     * 点赞
+     * 点赞数
      */
-    private Integer goodNumber;
+    private Long goodNumber;
 
     /**
      * 回答数
@@ -71,4 +71,9 @@ public class WebCommentIndexVo implements Serializable {
      * 子评论
      */
     private String bestAsk;
+
+    /**
+     * 点赞记号
+     */
+    private Integer goodStatus;
 }

@@ -6,6 +6,8 @@
 
     <resultMap id="BaseResultMap" type="com.tang.newcloud.service.edu.entity.Article">
             <id property="id" column="id" jdbcType="CHAR"/>
+            <result property="articleName" column="article_name" jdbcType="VARCHAR"/>
+            <result property="author" column="author" jdbcType="VARCHAR"/>
             <result property="memberId" column="member_id" jdbcType="CHAR"/>
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
@@ -18,9 +20,9 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,member_id,nickname,
-        avatar,content,answer_number,
-        view_number,good_number,gmt_create,
-        gmt_modified
+        id,article_name,author,
+        member_id,nickname,avatar,
+        content,answer_number,view_number,
+        good_number,gmt_create,gmt_modified
     </sql>
 </mapper>

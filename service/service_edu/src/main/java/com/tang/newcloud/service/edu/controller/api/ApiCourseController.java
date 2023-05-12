@@ -68,4 +68,11 @@ public class ApiCourseController {
         courseService.updateBuyCountById(id);
         return R.ok();
     }
+
+    @ApiOperation("根据查询字段模糊查询课程")
+    @GetMapping("like/course")
+    public R getCourses(@ApiParam("查询课程参数")@RequestParam("course")String course){
+        List<String> courses = courseService.getCourses(course);
+        return R.ok().data("courses", courses);
+    }
 }

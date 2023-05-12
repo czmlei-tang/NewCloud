@@ -81,5 +81,11 @@ public class ApiOrderController {
         return R.setResult(ResultCodeEnum.PAY_RUN);//支付中
     }
 
+    @ApiOperation(value = "暂时切换支付状态")
+    @PutMapping("/change-pay-status/{orderNo}")
+    public R update(@PathVariable String orderNo){
+        Boolean b = orderService.updateOrderStatusTemp(orderNo);
+        return b?R.ok():R.error();
+    }
 
 }

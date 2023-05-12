@@ -46,7 +46,7 @@ public class WebCommentVo {
      * 点赞
      */
     @ApiModelProperty(value = "点赞")
-    private Integer goodNumber;
+    private Long goodNumber;
 
     /**
      * 回答数
@@ -66,10 +66,10 @@ public class WebCommentVo {
     @ApiModelProperty(value = "评论时间")
     private Date gmtCreate;
 
-    /**
-     * 子评论
-     */
-    @ApiModelProperty(value = "子评论")
-    private List<WebCommentVo> children = new ArrayList<>();
+    @ApiModelProperty(value = "区域id")
+    private String masterId;
+
+    @ApiModelProperty(value = "点赞状态")
+    private Integer goodStatus;
 
 }

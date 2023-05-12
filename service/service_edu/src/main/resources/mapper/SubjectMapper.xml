@@ -20,5 +20,8 @@
     <select id="selectSubjects" resultType="com.tang.newcloud.service.edu.entity.vo.web.WebCommentTagsVo">
         select id,title from edu_subject limit 20
     </select>
+    <select id="selectIdAndTitle" resultType="com.tang.newcloud.service.edu.entity.vo.WebSubjectSelectVo">
+        select id,title from edu_subject where title like "%"#{title}"%"
+    </select>
 
 </mapper>

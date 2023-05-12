@@ -8,6 +8,7 @@ import com.tang.newcloud.service.trade.service.OrderService;
 import com.tang.newcloud.service.trade.service.WeixinPayService;
 import com.tang.newcloud.service.trade.util.WeixinPayProperties;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

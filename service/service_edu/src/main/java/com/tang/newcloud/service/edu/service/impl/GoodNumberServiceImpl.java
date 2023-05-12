@@ -7,8 +7,9 @@ import com.tang.newcloud.service.edu.mapper.GoodNumberMapper;
 import com.tang.newcloud.service.edu.util.RedisKeyUtils;
 import org.redisson.api.*;
 import org.redisson.client.codec.StringCodec;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
 * @author 29878
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 public class GoodNumberServiceImpl extends ServiceImpl<GoodNumberMapper, GoodNumber>
     implements GoodNumberService{
 
-    @Autowired
+    @Resource
     private RedissonClient redissonClient;
 
     @Override
@@ -30,14 +31,12 @@ public class GoodNumberServiceImpl extends ServiceImpl<GoodNumberMapper, GoodNum
             //点赞成功时
             incrementLikedCount(RedisKeyUtils.getToid(goodNumberKey));
             //定时任务列表中加入点赞的key
-            RSet<String> quartzRm = redissonClient.getSet("quartz-rm", new StringCodec());
-            if(quartzRm.contains(goodNumberKey)){
-                quartzRm.remove(goodNumberKey);
-            }
-            RSet<String> quartz = redissonClient.getSet("quartz-add", new StringCodec("utf-8"));
+            RSet<String> quartzRm = redissonClient.getSet("quartz-rm",StringCodec.INSTANCE);
+            quartzRm.remove(goodNumberKey);
+            RSet<String> quartz = redissonClient.getSet("quartz-add",StringCodec.INSTANCE);
             quartz.add(goodNumberKey);
         }
-        return status!=null?true:false;
+        return status != null;
     }
 
     /**
@@ -52,15 +51,15 @@ public class GoodNumberServiceImpl extends ServiceImpl<GoodNumberMapper, GoodNum
         Object status = map.put("status", 0);
         if(status!=null){
             //取消点赞成功时
-            Integer integer = decrementLikedCount(RedisKeyUtils.getToid(goodNumberKey));
-            if (integer==0){
+            Long total = decrementLikedCount(RedisKeyUtils.getToid(goodNumberKey));
+            if (total==0){
                 deleteLikedFromRedis(goodNumberKey);
                 deleteCount(RedisKeyUtils.getToid(goodNumberKey));
-                RSet<String> quartz = redissonClient.getSet("quartz-add", new StringCodec("utf-8"));
+                RSet<String> quartz = redissonClient.getSet("quartz-add", StringCodec.INSTANCE);
                 if(quartz.contains(goodNumberKey)){
                     quartz.remove(goodNumberKey);
                 }
-                RSet<String> quartzRm = redissonClient.getSet("quartz-rm", new StringCodec());
+                RSet<String> quartzRm = redissonClient.getSet("quartz-rm", StringCodec.INSTANCE);
                 quartzRm.add(goodNumberKey);
             }
         }
@@ -74,17 +73,21 @@ public class GoodNumberServiceImpl extends ServiceImpl<GoodNumberMapper, GoodNum
     }
 
     @Override
-    public Integer incrementLikedCount(String toId) {
-        RBucket<Object> bucket = redissonClient.getBucket(toId);
-        bucket.set((Integer)bucket.get()+1);
-        return (Integer) bucket.get();
+    public void incrementLikedCount(String toId) {
+        RBucket<Long> bucket = redissonClient.getBucket(toId);
+        Long aLong = bucket.get();
+        if(aLong!=null&&aLong!=0){
+            bucket.set(bucket.get()+1);
+        }else{
+            bucket.set(1L);
+        }
     }
 
     @Override
-    public Integer decrementLikedCount(String toId) {
-        RBucket<Object> bucket = redissonClient.getBucket(toId);
-        bucket.set((Integer)bucket.get()-1);
-        return (Integer) bucket.get();
+    public Long decrementLikedCount(String toId) {
+        RBucket<Long> bucket = redissonClient.getBucket(toId);
+        bucket.set(bucket.get()-1);
+        return bucket.get();
     }
 
     public Boolean deleteCount(String toId){

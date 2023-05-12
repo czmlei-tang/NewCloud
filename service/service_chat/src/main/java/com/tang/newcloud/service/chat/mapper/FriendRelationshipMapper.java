@@ -22,6 +22,8 @@ public interface FriendRelationshipMapper extends BaseMapper<FriendRelationship>
     List<FriendRelationship> selectByUserId(String userId);
 
     Integer updateByUserIdAndFriendIdAndRemark(String userId, String friendId, String remark);
+
+    List<String> selectFriendId(String id);
 }
 
 

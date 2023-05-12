@@ -10,6 +10,7 @@
             <result property="teacherId" column="teacher_id" jdbcType="CHAR"/>
             <result property="memberId" column="member_id" jdbcType="CHAR"/>
             <result property="answerId" column="answer_id" jdbcType="CHAR"/>
+            <result property="masterId" column="master_id" jdbcType="CHAR"/>
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
             <result property="goodNumber" column="good_number" jdbcType="INTEGER"/>
@@ -30,16 +31,12 @@
         <result property="answerNumber" column="answer_number" jdbcType="INTEGER"/>
         <result property="content" column="content" jdbcType="VARCHAR"/>
         <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
-        <collection property="children"
-                    ofType="com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo"
-                    select="selectComments"
-                    column="id">
-        </collection>
+        <result property="masterId" column="master_id" jdbcType="CHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id,subject_id,teacher_id,
-        member_id,answer_id,nickname,
+        member_id,answer_id,master_id,nickname,
         avatar,good_number,answer_number,
         watch_number,status,content,
         gmt_create,gmt_modified
@@ -47,7 +44,7 @@
     <sql id="Web_Comment_Map">
         a.id,a.member_id,a.nickname,a.avatar,
         a.good_number,a.answer_number,a.content,
-        a.gmt_create,
+        a.gmt_create,a.master_id,
         b.nickname as name_answer
     </sql>
     <update id="updateViewById" parameterType="long">
@@ -55,6 +52,9 @@
     </update>
     <update id="updateGoodNumber">
         update edu_comment set good_number = #{ i } where id = #{id}
+    </update>
+    <update id="increaseAnswerNumber">
+        update edu_comment set answer_number = answer_number+1 where id= #{answerId}
     </update>
     <delete id="deleteCommentById" parameterType="long">
         delete from edu_comment where id = #{id}
@@ -80,7 +80,12 @@
     </select>
     <select id="selectBestComment" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include>
-        from edu_comment where answer_id =#{id} order by good_number desc limit 1
+        from edu_comment where answer_id =#{id} order by good_number desc, answer_number desc limit 1
     </select>
-
+    <select id="selectSecondComments" resultMap="WebCommentResoultMap" parameterType="long">
+        select
+        <include refid="Web_Comment_Map"></include>
+        from edu_comment a left join edu_comment b on a.answer_id = b.id
+        where a.master_id = #{id} order by gmt_create desc
+    </select>
 </mapper>

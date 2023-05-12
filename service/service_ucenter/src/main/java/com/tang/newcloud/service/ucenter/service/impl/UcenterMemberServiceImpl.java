@@ -1,12 +1,10 @@
 package com.tang.newcloud.service.ucenter.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.tang.newcloud.common.base.result.ResultCodeEnum;
-import com.tang.newcloud.common.base.util.FormUtils;
-import com.tang.newcloud.common.base.util.JwtInfo;
-import com.tang.newcloud.common.base.util.JwtUtils;
-import com.tang.newcloud.common.base.util.MD5;
+import com.tang.newcloud.common.base.util.*;
 import com.tang.newcloud.service.base.dto.FriendDto;
 import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
@@ -25,8 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
 * @author 29878
@@ -74,14 +74,17 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
             throw new NewCloudException(ResultCodeEnum.REGISTER_MOBLE_ERROR);
         }
         //注册
-        //注册
         UcenterMember member = new UcenterMember();
-        member.setNickname(nickname);
-        member.setMobile(mobile);
-        member.setPassword(MD5.encrypt(password));
-        member.setIsDisabled(0);
-        member.setAvatar("https://guli-file-helen.oss-cn-beijing.aliyuncs.com/avatar/default.jpg");
-        baseMapper.insert(member);
+        String id = SnowFlakeUtil.getDefaultSnowFlakeId().toString();
+        member.setId(id);
+        CompletableFuture.runAsync(()->{
+            member.setNickname(nickname);
+            member.setMobile(mobile);
+            member.setPassword(MD5.encrypt(password));
+            member.setIsDisabled(0);
+            member.setAvatar("https://guli-file-helen.oss-cn-beijing.aliyuncs.com/avatar/default.jpg");
+            baseMapper.insert(member);
+        });
 
     }
 
@@ -110,17 +113,13 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         int type =1;
         memberMapper.updateStatus(type,member.getId());
 
-//        StringBuffer buffer = new StringBuffer();
-//        buffer.append(member.getNickname());
-//        buffer.append(member.getMobile());
-//        buffer.append("@126.com");
         if(member.getMail()!=null) {
             HashMap<String, String> mailMap = new HashMap<>();
             String buffer = member.getMail();
             String ip = getIp(request);
             mailMap.put("buffer", buffer);
             mailMap.put("ip", ip);
-
+            mailMap.put("date", DateUtil.now());
             String mail = JSONUtil.toJsonStr(mailMap);
             rabbitTemplate.convertAndSend("newcloud_exchange", "newcloud_mail", mail);
         }

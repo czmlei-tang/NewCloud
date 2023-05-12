@@ -17,11 +17,6 @@ import lombok.Data;
 @TableName(value ="send_message")
 @Data
 public class SendMessage extends BaseEntity implements Serializable {
-    /**
-     * 消息id
-     */
-//    @TableId
-//    private String id;
 
     /**
      * 用户id
@@ -29,19 +24,19 @@ public class SendMessage extends BaseEntity implements Serializable {
     private String userId;
 
     /**
-     * 群id
+     * 朋友id or friendId
      */
-    private String groupId;
-
-    /**
-     * 朋友id
-     */
-    private String friendId;
+    private String areaId;
 
     /**
      * 消息内容
      */
     private String content;
+
+    /**
+     *1.私发 2.群发
+     */
+    private Integer type;
 
     /**
      * 0:发送未成功 1：反之
@@ -53,10 +48,6 @@ public class SendMessage extends BaseEntity implements Serializable {
      */
     private Integer messStatus;
 
-    /**
-     * 消息发送时间
-     */
-//    private Date gmtCreate;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

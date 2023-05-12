@@ -26,11 +26,11 @@ public interface GoodNumberService extends IService<GoodNumber> {
     /**
      * 该用户的点赞数加1
      * @param toId
-     */Integer incrementLikedCount(String toId);
+     */void incrementLikedCount(String toId);
 
     /**
      * 该用户的点赞数减1
      * @param toId
-     */Integer decrementLikedCount(String toId);
+     */Long decrementLikedCount(String toId);
 
 }

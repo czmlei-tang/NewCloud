@@ -5,6 +5,7 @@ import com.alibaba.excel.support.ExcelTypeEnum;
 import com.tang.newcloud.service.edu.entity.Subject;
 import com.tang.newcloud.service.edu.entity.excel.ExcelSubjectData;
 import com.tang.newcloud.service.edu.entity.vo.SubjectVo;
+import com.tang.newcloud.service.edu.entity.vo.WebSubjectSelectVo;
 import com.tang.newcloud.service.edu.listener.ExcelSubjectDataListener;
 import com.tang.newcloud.service.edu.mapper.SubjectMapper;
 import com.tang.newcloud.service.edu.service.SubjectService;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.List;
 
@@ -27,7 +29,7 @@ import java.util.List;
 @Service
 public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> implements SubjectService {
 
-    @Autowired
+    @Resource
     private SubjectMapper subjectMapper;
 
     @Transactional(rollbackFor = Exception.class)
@@ -43,5 +45,13 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
     @Override
     public List<SubjectVo> nestedList() {
         return subjectMapper.selectNestedListByParentId("0");
+    }
+
+    @Override
+    public List<WebSubjectSelectVo> getLikeSubjectData(String title) {
+        if(title == null){
+            title = "";
+        }
+        return subjectMapper.selectIdAndTitle(title);
     }
 }

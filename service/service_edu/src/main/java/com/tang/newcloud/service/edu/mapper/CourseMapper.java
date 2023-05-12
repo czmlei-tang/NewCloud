@@ -42,4 +42,5 @@ public interface CourseMapper extends BaseMapper<Course> {
 
     Course selectByCourseId(String courseId);
 
+    List<String> selectNames(String course);
 }

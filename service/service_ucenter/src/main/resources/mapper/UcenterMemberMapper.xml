@@ -49,7 +49,7 @@
         select count(*) from ucenter_member where nickname=#{nickname} and mobile=#{mobile}
     </select>
     <select id="selectByMobile" resultMap="BaseResultMap" >
-        select <include refid="Base_Column_List"/> from ucenter_member where mobile=#{mobile}
+        select <include refid="Base_Column_List"/> from ucenter_member where mobile=#{mobile} order by gmt_create limit 1
     </select>
     <select id="selectByOpenid" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from ucenter_member where openid=#{openid}

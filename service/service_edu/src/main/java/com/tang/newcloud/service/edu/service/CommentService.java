@@ -6,6 +6,7 @@ import com.tang.newcloud.service.edu.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.edu.entity.vo.web.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.awt.geom.IllegalPathStateException;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,9 @@ public interface CommentService extends IService<Comment> {
 
     Map getCommentList(Long page, Long limit, WebCommentQueryVo webCommentQueryVo);
 
-    WebCommentIndexVo getOneComment(Long id);
+    WebCommentIndexVo getOneComment(Long id,HttpServletRequest request);
 
-    List<WebCommentVo> getComments(Long parentId);
+    List<WebCommentVo> getComments(Long parentId,HttpServletRequest request);
 
     Boolean saveComment(Comment comment, JwtInfo jwtInfo);
 
@@ -33,5 +34,7 @@ public interface CommentService extends IService<Comment> {
 
     List<WebCommentTagsVo> getTags();
 
-    WebCommentBestAskVo getBestAsk(Long id);
+    WebCommentBestAskVo getBestAsk(Long id, HttpServletRequest request);
+
+    List<WebCommentVo> getSecondDataComments(Long parentId,HttpServletRequest request);
 }

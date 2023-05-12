@@ -2,6 +2,9 @@ package com.tang.newcloud.service.chat.service;
 
 import com.tang.newcloud.service.chat.entity.SendMessage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tang.newcloud.service.chat.entity.vo.UnreadVo;
+
+import java.util.List;
 
 /**
 * @author 29878
@@ -10,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface SendMessageService extends IService<SendMessage> {
 
+    List<UnreadVo> getUnread(String id);
 }

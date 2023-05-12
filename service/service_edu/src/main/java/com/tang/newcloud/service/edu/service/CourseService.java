@@ -60,4 +60,6 @@ public interface CourseService extends IService<Course> {
     void updateBuyCountById(String id);
 
     void removeVodById(String id);
+
+    List<String> getCourses(String course);
 }

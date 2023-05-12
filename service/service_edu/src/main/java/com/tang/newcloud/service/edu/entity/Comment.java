@@ -48,6 +48,9 @@ public class Comment extends BaseEntity implements Serializable {
     @ApiModelProperty(value = "如果不是问题，那回答了哪个问题")
     private String answerId;
 
+    @ApiModelProperty(value = "区域id")
+    private String masterId;
+
     /**
      * 会员昵称
      */
@@ -95,4 +98,10 @@ public class Comment extends BaseEntity implements Serializable {
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 
+//    public Comment(String answerId, String masterId, Integer status, String content) {
+//        this.answerId = answerId;
+//        this.masterId = masterId;
+//        this.status = status;
+//        this.content = content;
+//    }
 }

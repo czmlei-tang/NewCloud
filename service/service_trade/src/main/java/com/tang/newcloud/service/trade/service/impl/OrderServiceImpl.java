@@ -1,5 +1,6 @@
 package com.tang.newcloud.service.trade.service.impl;
 
+import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -97,10 +98,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
 
 //        String s = JSONUtil.toJsonStr(order);
 //        orderMapper.insert(order);
-        byte[] bytes = RabbitUtil.getBytesFromObject(order);
-        Message message = MessageBuilder.withBody(bytes).setContentType(MessageProperties.CONTENT_TYPE_JSON).build();
-        log.info(message.toString());
-        rabbitTemplate.convertAndSend("newcloud_order","newcloud.order",message);
+//        byte[] bytes = RabbitUtil.getBytesFromObject(order);
+//        Message message = MessageBuilder.withBody(bytes).setContentType(MessageProperties.CONTENT_TYPE_JSON).build();
+//        log.info(message.toString());
+//        rabbitTemplate.convertAndSend("newcloud_order","newcloud.order",message);
+        orderMapper.insert(order);
         return order.getId();
     }
 
@@ -113,7 +115,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
     @Override
     public Boolean isBuyByCourseId(String courseId, String memberId) {
         Integer integer = orderMapper.selectStatus(courseId, memberId);
-        return  integer==1?true:false;
+        if(integer==null){
+            integer = 0;
+        }
+        return integer == 1;
     }
 
     @Override
@@ -164,6 +169,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order>
         queryWrapper.eq("order_no", orderNo);
         Order order = baseMapper.selectOne(queryWrapper);
         return order.getStatus() == 1;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateOrderStatusTemp(String orderNo) {
+        Order order = getOrderByOrderNo(orderNo);
+        order.setStatus(1);//支付成功
+        int i = baseMapper.updateById(order);
+
+        //记录支付日志
+        PayLog payLog = new PayLog();
+        payLog.setOrderNo(orderNo);
+        payLog.setPayTime(new Date());
+        payLog.setPayType(1);//支付类型
+        payLog.setTotalFee(order.getTotalFee().longValue());//总金额(分)
+        payLog.setTradeState("交易成功");//支付状态
+        payLog.setTransactionId(SnowFlakeUtil.getDefaultSnowFlakeId().toString());
+        payLog.setAttr("#");
+        log.info(payLog.toString());
+        int i1 = payLogMapper.insert(payLog);
+
+        //更新课程销量：有问题直接熔断
+        eduCourseService.updateBuyCountById(order.getCourseId());
+
+        return i+i1>1;
     }
 }
 

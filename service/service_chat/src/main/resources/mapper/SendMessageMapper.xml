@@ -7,17 +7,21 @@
     <resultMap id="BaseResultMap" type="com.tang.newcloud.service.chat.entity.SendMessage">
             <id property="id" column="id" jdbcType="CHAR"/>
             <result property="userId" column="user_id" jdbcType="CHAR"/>
-            <result property="groupId" column="group_id" jdbcType="CHAR"/>
-            <result property="friendId" column="friend_id" jdbcType="CHAR"/>
+            <result property="areaId" column="area_id" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="type" column="type" jdbcType="INTEGER"/>
             <result property="sendStatus" column="send_status" jdbcType="INTEGER"/>
             <result property="messStatus" column="mess_status" jdbcType="INTEGER"/>
             <result property="gmtCreate" column="gmt_create" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_id,group_id,
-        friend_id,content,send_status,
+        id,user_id,area_id,content,type,send_status,
         mess_status,gmt_create
     </sql>
+    <select id="selectUnreadMessage" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from send_message
+        where area_id = #{id} and user_id = #{friend}
+    </select>
 </mapper>

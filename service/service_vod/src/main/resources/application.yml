@@ -1,14 +1,8 @@
-
 spring:
   servlet:
     multipart:
       max-file-size: 1024MB # 最大上传单个文件大小：默认1M
       max-request-size: 1024MB # 最大置总上传的数据大小 ：默认10M
-  rabbitmq:
-    virtual-host: newcloud
-    host: 43.143.129.182
-    username: tanglei
-    password: 5201314
 aliyun:
   vod:
     keyid: LTAI5t81kjYt2dLev3mqovD4

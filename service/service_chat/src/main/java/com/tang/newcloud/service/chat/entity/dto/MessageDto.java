@@ -29,12 +29,7 @@ public class MessageDto {
     /**
      *接收用户id，可为空
      */
-    private String toUserId;
-
-    /**
-     * 群组id，可为空
-     */
-    private String groupId;
+    private String areaId;
 
     /**
      * 消息体

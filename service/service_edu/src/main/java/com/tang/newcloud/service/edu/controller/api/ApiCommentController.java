@@ -35,9 +35,6 @@ public class ApiCommentController {
     @Autowired
     private CommentService commentService;
 
-    @Autowired
-    private RedissonClient redissonClient;
-
     @ApiOperation("获取问答")
     @GetMapping("/list/{page}/{limit}")
     public R readQuestions(@ApiParam(value = "当前页码", required = true) @PathVariable Long page,
@@ -49,21 +46,28 @@ public class ApiCommentController {
 
     @ApiOperation("根据id获取问答")
     @GetMapping("/get/{id}")
-    public R readOneQuestion(@ApiParam(value = "问题id",required = true)@PathVariable Long id){
-        WebCommentIndexVo comment=commentService.getOneComment(id);
+    public R readOneQuestion(@ApiParam(value = "问题id",required = true)@PathVariable Long id,HttpServletRequest request){
+        WebCommentIndexVo comment=commentService.getOneComment(id,request);
         List<WebCommentHotVo> hotComment = commentService.getHotComment();
         List<WebCommentTagsVo> list = commentService.getTags();
-        WebCommentBestAskVo bestAskVo = commentService.getBestAsk(id);
+        WebCommentBestAskVo bestAskVo = commentService.getBestAsk(id,request);
         return R.ok().data("comment",comment).data("hotCommentList",hotComment).data("tags",list).data("bestAskVo",bestAskVo);
     }
 
-    @ApiOperation("获取嵌套评论")
-    @GetMapping("/nested-answer/{parentId}")
-    public R readComments(@ApiParam(value = "父问题（评论）id",required = true)@PathVariable Long parentId){
-        List<WebCommentVo> webCommentVos=commentService.getComments(parentId);
-        return R.ok().data("webComments",webCommentVos);
+    //以修改，只返回一级数据
+    @ApiOperation("获取一级评论")
+    @GetMapping("/first/{parentId}")
+    public R readComments(@ApiParam(value = "父问题（评论）id",required = true)@PathVariable Long parentId,HttpServletRequest request){
+        List<WebCommentVo> webCommentVos=commentService.getComments(parentId,request);
+        return webCommentVos.size()>0?R.ok().data("webComments",webCommentVos):R.ok().message("还没有人回答，提问者喊你去回答...");
     }
 
+    @ApiOperation("二级数据")
+    @GetMapping("/second/{parentId}")
+    public R readSecondDataComments(@ApiParam(value = "父问题（评论）id",required = true)@PathVariable Long parentId,HttpServletRequest request){
+        List<WebCommentVo> webCommentVos = commentService.getSecondDataComments(parentId,request);
+        return webCommentVos.size()>0?R.ok().data("webComments",webCommentVos):R.ok().message("还没有人回答，提问者喊你去回答...");
+    }
     /**
      * @description 前端的comment对象必须包括answerid
      * @param comment
@@ -74,6 +78,9 @@ public class ApiCommentController {
     @PostMapping("/auth/pulish")
     public R pulishComment(@ApiParam(value = "评论对象",required = true)@RequestBody Comment comment, HttpServletRequest request){
         JwtInfo jwtInfo = JwtUtils.getMemberIdByJwtToken(request);
+        if(comment.getContent()==null&&comment.getContent()==""){
+            return R.error().message("文本框内容不得为空");
+        }
         Boolean isOK = commentService.saveComment(comment,jwtInfo);
         return isOK?R.ok().message("success"):R.error().message("发布失败");
     }
@@ -87,7 +94,7 @@ public class ApiCommentController {
         return isOK?R.ok().message("delete success"):R.error().message("delete error");
     }
 
-    @ApiOperation("增加点赞数")
+    @ApiOperation("改变点赞数")
     @GetMapping("/auth/incr/good-number/{id}")
     public R IncreaseGood(@ApiParam(value = "评论id",required = true)@PathVariable Long id,HttpServletRequest request){
         JwtInfo jwtInfo = JwtUtils.getMemberIdByJwtToken(request);

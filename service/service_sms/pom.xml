@@ -17,12 +17,10 @@
     </properties>
 
     <dependencies>
-        <!--阿里云短信-->
         <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>aliyun-java-sdk-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-
     </dependencies>
 
     <build>
