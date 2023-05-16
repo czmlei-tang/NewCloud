@@ -3,6 +3,10 @@ package com.tang.newcloud.service.edu.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.service.edu.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tang.newcloud.service.edu.entity.vo.web.WebArticleIndexHotVo;
+
+import java.util.List;
+import java.util.Map;
 
 /**
 * @author 29878
@@ -11,4 +15,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface ArticleService extends IService<Article> {
 
+    Map getArticles(Integer page, Integer limit);
+
+    List<WebArticleIndexHotVo> getHotArticles();
+
+    void increase(String id);
 }

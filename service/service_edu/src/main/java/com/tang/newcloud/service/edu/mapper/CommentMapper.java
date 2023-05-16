@@ -4,6 +4,8 @@ import com.tang.newcloud.service.edu.entity.Comment;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCommentHotVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCommentVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebMyAnswerVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebMyQuestionVo;
 
 import java.util.List;
 
@@ -19,11 +21,11 @@ public interface CommentMapper extends BaseMapper<Comment> {
 
     List<WebCommentVo> selectComments(Long parentId);
 
-    void updateViewById(Long id);
+    int updateViewById(Long id);
 
     Integer deleteCommentById(Long id);
 
-    void updateGoodNumber(Integer i,String id);
+    void updateGoodNumber(Long i,String id);
 
     String selectOneCommentContentByAnswerId(String id);
 
@@ -36,6 +38,14 @@ public interface CommentMapper extends BaseMapper<Comment> {
     List<WebCommentVo> selectSecondComments(Long id);
 
     void increaseAnswerNumber(String answerId);
+
+    int updateComment(String memberId, String nickname, String avatar);
+
+    List<WebMyQuestionVo> selectWebMyQuestionVo(String id);
+
+    Integer selectStatusById(String id);
+
+    List<WebMyAnswerVo> selectWebMyAnswerVo(String id);
 }
 
 

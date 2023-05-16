@@ -15,7 +15,7 @@
         id,from_id,to_id,
         status
     </sql>
-    <delete id="deleteData" parameterType="com.tang.newcloud.service.edu.entity.GoodNumber">
-        delete edu_good_number where to_id = #{toId} and from_id = #{fromId}
-    </delete>
+    <update id="deleteData" parameterType="com.tang.newcloud.service.edu.entity.GoodNumber">
+        update edu_good_number set status = #{status} where to_id = #{toId} and from_id = #{fromId}
+    </update>
 </mapper>

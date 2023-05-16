@@ -36,4 +36,10 @@ public interface UcenterMemberService extends IService<UcenterMember> {
     Map<String,Object> getFriendAvatar(String id);
 
     Integer getActive(String memberId);
+
+    Boolean checkPassword(String oldPassword, HttpServletRequest request);
+
+    Boolean updatePassword(String password, HttpServletRequest request);
+
+    boolean updateMemberDetail(UcenterMember member);
 }

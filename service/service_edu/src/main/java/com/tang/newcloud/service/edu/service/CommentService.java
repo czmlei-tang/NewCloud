@@ -1,13 +1,12 @@
 package com.tang.newcloud.service.edu.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.tang.newcloud.common.base.util.JwtInfo;
+import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.edu.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tang.newcloud.service.edu.entity.vo.web.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.awt.geom.IllegalPathStateException;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public interface CommentService extends IService<Comment> {
 
     Boolean removeCommentById(Long id,String memberId);
 
-    Boolean updateGoodNumber(Long id, String loginMemberId);
+    Integer updateGoodNumber(Long id, String loginMemberId);
 
     List<WebCommentHotVo> getHotComment();
 
@@ -37,4 +36,14 @@ public interface CommentService extends IService<Comment> {
     WebCommentBestAskVo getBestAsk(Long id, HttpServletRequest request);
 
     List<WebCommentVo> getSecondDataComments(Long parentId,HttpServletRequest request);
+
+    int updateComment(MemberChatDto memberChatDto);
+
+    List<WebMyQuestionVo> getAllMyQuestions(JwtInfo token);
+
+    Boolean checkStatus(String id);
+
+    List<WebMyAnswerVo> getAllMyAnswers(JwtInfo token);
+
+    Map getCommentDetail(Long id, HttpServletRequest request);
 }

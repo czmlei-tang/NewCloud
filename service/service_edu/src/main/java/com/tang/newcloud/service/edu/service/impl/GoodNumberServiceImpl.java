@@ -26,15 +26,19 @@ public class GoodNumberServiceImpl extends ServiceImpl<GoodNumberMapper, GoodNum
     @Override
     public Boolean saveLiked2Redis(String goodNumberKey) {
         RMap<Object, Object> map = redissonClient.getMap(goodNumberKey);
-        Object status = map.put("status", 1);
-        if(status!=null){
+        map.put("status", 1);
+        Integer status = (Integer)map.get("status");
+        if(status==1){
             //点赞成功时
             incrementLikedCount(RedisKeyUtils.getToid(goodNumberKey));
             //定时任务列表中加入点赞的key
             RSet<String> quartzRm = redissonClient.getSet("quartz-rm",StringCodec.INSTANCE);
-            quartzRm.remove(goodNumberKey);
-            RSet<String> quartz = redissonClient.getSet("quartz-add",StringCodec.INSTANCE);
-            quartz.add(goodNumberKey);
+            if(quartzRm.contains(goodNumberKey)){
+                quartzRm.remove(goodNumberKey);
+            }else{
+                RSet<String> quartz = redissonClient.getSet("quartz-add",StringCodec.INSTANCE);
+                quartz.add(goodNumberKey);
+            }
         }
         return status != null;
     }
@@ -48,8 +52,9 @@ public class GoodNumberServiceImpl extends ServiceImpl<GoodNumberMapper, GoodNum
     @Override
     public Boolean unlikeFromRedis(String goodNumberKey) {
         RMap<Object, Object> map = redissonClient.getMap(goodNumberKey);
-        Object status = map.put("status", 0);
-        if(status!=null){
+        map.put("status", 0);
+        Integer status = (Integer)map.get("status");
+        if(status==0){
             //取消点赞成功时
             Long total = decrementLikedCount(RedisKeyUtils.getToid(goodNumberKey));
             if (total==0){
@@ -58,12 +63,13 @@ public class GoodNumberServiceImpl extends ServiceImpl<GoodNumberMapper, GoodNum
                 RSet<String> quartz = redissonClient.getSet("quartz-add", StringCodec.INSTANCE);
                 if(quartz.contains(goodNumberKey)){
                     quartz.remove(goodNumberKey);
+                }else {
+                    RSet<String> quartzRm = redissonClient.getSet("quartz-rm", StringCodec.INSTANCE);
+                    quartzRm.add(goodNumberKey);
                 }
-                RSet<String> quartzRm = redissonClient.getSet("quartz-rm", StringCodec.INSTANCE);
-                quartzRm.add(goodNumberKey);
             }
         }
-        return status!=null?true:false;
+        return status != null;
     }
 
     @Override

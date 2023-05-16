@@ -44,6 +44,11 @@ public class Article extends BaseEntity implements Serializable {
     private String avatar;
 
     /**
+     * 文章头像
+     */
+    private String img;
+
+    /**
      * 文章内容
      */
     private String content;

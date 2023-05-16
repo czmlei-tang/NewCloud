@@ -2,6 +2,9 @@ package com.tang.newcloud.service.edu.mapper;
 
 import com.tang.newcloud.service.edu.entity.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.tang.newcloud.service.edu.entity.vo.web.WebArticleIndexHotVo;
+
+import java.util.List;
 
 /**
 * @author 29878
@@ -11,6 +14,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 */
 public interface ArticleMapper extends BaseMapper<Article> {
 
+    List<WebArticleIndexHotVo> selectHotArticle();
+
+    void updateViewNumber(String id);
 }
 
 

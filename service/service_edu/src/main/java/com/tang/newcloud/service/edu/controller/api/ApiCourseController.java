@@ -5,6 +5,7 @@ import com.tang.newcloud.service.base.dto.CourseDto;
 import com.tang.newcloud.service.edu.entity.Course;
 import com.tang.newcloud.service.edu.entity.vo.ChapterVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseTitleVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo;
 import com.tang.newcloud.service.edu.service.ChapterService;
 import com.tang.newcloud.service.edu.service.CourseService;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(description="课程")
+@Api(tags="课程")
 @RestController
 @RequestMapping("/api/edu/course")
 public class ApiCourseController {
@@ -72,7 +73,7 @@ public class ApiCourseController {
     @ApiOperation("根据查询字段模糊查询课程")
     @GetMapping("like/course")
     public R getCourses(@ApiParam("查询课程参数")@RequestParam("course")String course){
-        List<String> courses = courseService.getCourses(course);
+        List<WebCourseTitleVo> courses = courseService.getCourses(course);
         return R.ok().data("courses", courses);
     }
 }

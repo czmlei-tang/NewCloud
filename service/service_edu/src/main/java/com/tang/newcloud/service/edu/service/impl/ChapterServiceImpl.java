@@ -51,13 +51,13 @@ public class ChapterServiceImpl extends ServiceImpl<ChapterMapper, Chapter> impl
         //获取章信息
         QueryWrapper<Chapter> queryWrapperChapter = new QueryWrapper<>();
         queryWrapperChapter.eq("course_id", courseId);
-        queryWrapperChapter.orderByAsc("sort", "id");
+        queryWrapperChapter.orderByDesc("sort", "id");
         List<Chapter> chapterList = baseMapper.selectList(queryWrapperChapter);
 
         //获取课时信息
         QueryWrapper<Video> queryWrapperVideo = new QueryWrapper<>();
         queryWrapperVideo.eq("course_id", courseId);
-        queryWrapperVideo.orderByAsc("sort", "id");
+        queryWrapperVideo.orderByDesc("sort", "id");
         List<Video> videoList = videoMapper.selectList(queryWrapperVideo);
 
         //填充列表数据：Chapter列表

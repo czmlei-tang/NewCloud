@@ -24,7 +24,7 @@ public class AuthGlobalFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getURI().getPath();
 
-        //谷粒学院api接口，校验用户必须登录
+        //学院api接口，校验用户必须登录
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         if(antPathMatcher.match("/api/**/auth/**", path)) {
             List<String> tokenList = request.getHeaders().get("token");

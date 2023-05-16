@@ -1,11 +1,16 @@
 package com.tang.newcloud.service.ucenter.controller.api;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.netflix.ribbon.proxy.annotation.Http;
 import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.common.base.result.ResultCodeEnum;
 import com.tang.newcloud.common.base.util.JwtInfo;
 import com.tang.newcloud.common.base.util.JwtUtils;
+import com.tang.newcloud.common.base.util.MD5;
+import com.tang.newcloud.service.base.dto.MemberChatDto;
 import com.tang.newcloud.service.base.dto.MemberDto;
 import com.tang.newcloud.service.base.exception.NewCloudException;
+import com.tang.newcloud.service.ucenter.entity.UcenterMember;
 import com.tang.newcloud.service.ucenter.entity.vo.LoginVo;
 import com.tang.newcloud.service.ucenter.entity.vo.RegisterVo;
 import com.tang.newcloud.service.ucenter.service.UcenterMemberService;
@@ -60,6 +65,39 @@ public class ApiMemberController {
             @PathVariable String memberId){
         MemberDto memberDto = memberService.getMemberDtoByMemberId(memberId);
         return memberDto;
+    }
+
+    @ApiOperation("根据id获取会员信息")
+    @GetMapping("auth/read")
+    public R readMember(HttpServletRequest request){
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        String id = token.getId();
+        UcenterMember byId = memberService.getById(id);
+        return R.ok().data("member",byId);
+    }
+
+    @ApiOperation("更新个人资料")
+    @PutMapping("auth/update")
+    public R updateMember(@RequestBody UcenterMember member){
+        boolean b = memberService.updateMemberDetail(member);
+        JwtInfo jwtInfo = new JwtInfo();
+        BeanUtil.copyProperties(member,jwtInfo);
+        String jwtToken = JwtUtils.getJwtToken(jwtInfo, 1800);
+        return b?R.ok().data("token",jwtToken).message("更新成功"):R.error().message("更新失败");
+    }
+
+    @ApiOperation("核对密码")
+    @GetMapping("auth/check/password")
+    public R checkPassword( String oldPassword, HttpServletRequest request){
+        Boolean b = memberService.checkPassword(oldPassword,request);
+        return b?R.ok().message("密码正确"):R.error().message("密码错误");
+    }
+
+    @ApiOperation("修改密码")
+    @PutMapping("auth/update/password")
+    public R updatePassword(String password, HttpServletRequest request){
+        Boolean b = memberService.updatePassword(password,request);
+        return b?R.ok().message("修改成功"):R.error().message("修改失败");
     }
 
 }

@@ -9,6 +9,7 @@ import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseTitleVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo;
 
 import java.util.List;
@@ -61,5 +62,5 @@ public interface CourseService extends IService<Course> {
 
     void removeVodById(String id);
 
-    List<String> getCourses(String course);
+    List<WebCourseTitleVo> getCourses(String course);
 }

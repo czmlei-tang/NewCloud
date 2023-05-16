@@ -11,6 +11,7 @@
             <result property="memberId" column="member_id" jdbcType="CHAR"/>
             <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
             <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="img" column="img" jdbcType="VARCHAR"/>
             <result property="content" column="content" jdbcType="VARCHAR"/>
             <result property="answerNumber" column="answer_number" jdbcType="INTEGER"/>
             <result property="viewNumber" column="view_number" jdbcType="INTEGER"/>
@@ -21,8 +22,22 @@
 
     <sql id="Base_Column_List">
         id,article_name,author,
-        member_id,nickname,avatar,
+        member_id,nickname,avatar,img,
         content,answer_number,view_number,
         good_number,gmt_create,gmt_modified
     </sql>
+    <update id="updateViewNumber">
+        update edu_article set view_number = view_number+1 where id = #{id}
+    </update>
+    <select id="selectHotArticle"
+            resultType="com.tang.newcloud.service.edu.entity.vo.web.WebArticleIndexHotVo">
+        select id,
+               article_name as articleName,
+               answer_number as answerNumber,
+               good_number as goodNumber,
+               gmt_create as gmtCreate
+        from edu_article
+        order by view_number desc
+        limit 5
+    </select>
 </mapper>

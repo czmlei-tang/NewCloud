@@ -34,6 +34,8 @@ public interface UcenterMemberMapper extends BaseMapper<UcenterMember> {
     void updateStatus(int type,String id);
 
     Integer selectStatusByMemberId(String memberId);
+
+    Boolean checkNicknameAndAvatar(String nickname, String avatar);
 }
 
 

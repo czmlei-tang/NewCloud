@@ -19,9 +19,9 @@
 
     <sql id="tables">
         edu_course c
-        LEFT JOIN edu_teacher t ON c.teacher_id = t.id
-        LEFT JOIN edu_subject s1 ON c.subject_parent_id = s1.id
-        LEFT JOIN edu_subject s2 ON c.subject_id = s2.id
+        inner JOIN edu_teacher t ON c.teacher_id = t.id
+        inner JOIN edu_subject s1 ON c.subject_parent_id = s1.id
+        inner JOIN edu_subject s2 ON c.subject_id = s2.id
     </sql>
 
     <sql id="selectAllByTeacherIdSql">
@@ -79,10 +79,9 @@
     </select>
 
     <select id="selectAllByTeacherId" resultType="com.tang.newcloud.service.edu.entity.Course" parameterType="string">
-        select
-        <include refid="selectAllByTeacherIdSql"></include>
-        from edu_course where
-            teacher_id = #{id}
+        select <include refid="selectAllByTeacherIdSql"></include>
+        from edu_course
+        where teacher_id = #{id}
     </select>
 
     <select id="selectByWebCourseQueryVo" resultType="com.tang.newcloud.service.edu.entity.Course" parameterType="com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo">
@@ -139,10 +138,10 @@
 
         FROM
             edu_course c
-                LEFT JOIN edu_course_description cd ON c.id = cd.id
-                LEFT JOIN edu_teacher t ON c.teacher_id = t.id
-                LEFT JOIN edu_subject s1 ON c.subject_parent_id = s1.id
-                LEFT JOIN edu_subject s2 ON c.subject_id = s2.id
+                inner JOIN edu_course_description cd ON c.id = cd.id
+                inner JOIN edu_teacher t ON c.teacher_id = t.id
+                inner JOIN edu_subject s1 ON c.subject_parent_id = s1.id
+                inner JOIN edu_subject s2 ON c.subject_id = s2.id
         WHERE
             c.id = #{id}
     </select>
@@ -152,8 +151,8 @@
     <select id="selectByCourseId" resultType="com.tang.newcloud.service.edu.entity.Course">
         select id,teacher_id as teacherId,title,price,cover from edu_course where id=#{courseId}
     </select>
-    <select id="selectNames" resultType="java.lang.String">
-        select title from edu_course where title like "%"#{course}"%"
+    <select id="selectNames" resultType="com.tang.newcloud.service.edu.entity.vo.web.WebCourseTitleVo">
+        select id,title from edu_course where title like "%"#{course}"%"
     </select>
 
 </mapper>

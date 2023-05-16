@@ -1,8 +1,12 @@
 package com.tang.newcloud.service.ucenter.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.tang.newcloud.common.base.result.R;
 import com.tang.newcloud.common.base.result.ResultCodeEnum;
 import com.tang.newcloud.common.base.util.*;
 import com.tang.newcloud.service.base.dto.FriendDto;
@@ -12,6 +16,7 @@ import com.tang.newcloud.service.base.exception.NewCloudException;
 import com.tang.newcloud.service.ucenter.entity.UcenterMember;
 import com.tang.newcloud.service.ucenter.entity.vo.LoginVo;
 import com.tang.newcloud.service.ucenter.entity.vo.RegisterVo;
+import com.tang.newcloud.service.ucenter.feign.EduService;
 import com.tang.newcloud.service.ucenter.service.UcenterMemberService;
 import com.tang.newcloud.service.ucenter.mapper.UcenterMemberMapper;
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -45,6 +49,9 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
 
     @Resource
     private UcenterMemberMapper memberMapper;
+
+    @Resource
+    private EduService eduService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -184,6 +191,50 @@ public class UcenterMemberServiceImpl extends ServiceImpl<UcenterMemberMapper, U
         return i;
     }
 
+    @Override
+    public Boolean checkPassword(String oldPassword, HttpServletRequest request) {
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        String id = token.getId();
+        LambdaQueryWrapper<UcenterMember> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(StrUtil.isNotEmpty(oldPassword),UcenterMember::getPassword,oldPassword)
+                .eq(StrUtil.isNotEmpty(id),UcenterMember::getId,id);
+        Integer integer = baseMapper.selectCount(queryWrapper);
+        return integer == 1;
+    }
+
+    @Override
+    public Boolean updatePassword(String password, HttpServletRequest request) {
+        JwtInfo token = JwtUtils.getMemberIdByJwtToken(request);
+        String id = token.getId();
+        UcenterMember ucenterMember = new UcenterMember();
+        ucenterMember.setId(id);
+        ucenterMember.setPassword(password);
+        int i = baseMapper.updateById(ucenterMember);
+        return i == 1;
+    }
+
+    @Override
+    public boolean updateMemberDetail(UcenterMember member) {
+        String id = member.getId();
+        String nickname = member.getNickname();
+        String avatar = member.getAvatar();
+        // 判断是否修改用户名
+        MemberChatDto memberChatDto = memberMapper.selectMemberNameAndAvatar(id);
+        if(memberChatDto.getNickname().equals(nickname)||memberChatDto.getAvatar().equals(avatar)){
+            // 更新评论
+            memberChatDto.setNickname(nickname).setAvatar(avatar);
+            R r = eduService.updateComment(memberChatDto);
+            if(r.getSuccess()==true){
+                int i = baseMapper.updateById(member);
+                return i>0;
+            }else{
+               throw new NewCloudException(ResultCodeEnum.UNKNOWN_REASON);
+            }
+        }else{
+            int i = baseMapper.updateById(member);
+            return i>0;
+        }
+    }
 
 }
 

@@ -56,6 +56,9 @@
     <update id="increaseAnswerNumber">
         update edu_comment set answer_number = answer_number+1 where id= #{answerId}
     </update>
+    <update id="updateComment">
+        update edu_comment set nickname = #{nickname},avatar=#{avatar} where member_id = #{memberId}
+    </update>
     <delete id="deleteCommentById" parameterType="long">
         delete from edu_comment where id = #{id}
     </delete>
@@ -80,12 +83,46 @@
     </select>
     <select id="selectBestComment" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include>
-        from edu_comment where answer_id =#{id} order by good_number desc, answer_number desc limit 1
+        from edu_comment where answer_id =#{id} order by good_number desc limit 1
     </select>
     <select id="selectSecondComments" resultMap="WebCommentResoultMap" parameterType="long">
         select
         <include refid="Web_Comment_Map"></include>
         from edu_comment a left join edu_comment b on a.answer_id = b.id
         where a.master_id = #{id} order by gmt_create desc
+    </select>
+    <sql id="selectWebMyQuestionVo_sql">
+        id,
+        content,
+        subject_id as subject,
+        good_number as goodNumber,
+        answer_number as answerNumber,
+        watch_number as watchNumber,
+        gmt_create as gmt_create
+    </sql>
+    <sql id="selectWebMyAnswerVo_sql">
+        id,
+        content,
+        good_number as goodNumber,
+        answer_id as answerId,
+        answer_number as answerNumber,
+        watch_number as watchNumber,
+        gmt_create as gmt_create
+    </sql>
+    <select id="selectWebMyQuestionVo"
+            resultType="com.tang.newcloud.service.edu.entity.vo.web.WebMyQuestionVo">
+        select
+        <include refid="selectWebMyQuestionVo_sql"></include>
+        from edu_comment
+        where member_id = #{id} and status = 1
+    </select>
+    <select id="selectStatusById" resultType="java.lang.Integer">
+        select status from edu_comment where id = #{id}
+    </select>
+    <select id="selectWebMyAnswerVo" resultType="com.tang.newcloud.service.edu.entity.vo.web.WebMyAnswerVo">
+        select
+        <include refid="selectWebMyAnswerVo_sql"></include>
+        from edu_comment
+        where member_id = #{id} and status = 0
     </select>
 </mapper>

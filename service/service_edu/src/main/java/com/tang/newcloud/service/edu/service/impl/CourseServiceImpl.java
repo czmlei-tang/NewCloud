@@ -12,6 +12,7 @@ import com.tang.newcloud.service.edu.entity.vo.CoursePublishVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseQueryVo;
 import com.tang.newcloud.service.edu.entity.vo.CourseVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCourseQueryVo;
+import com.tang.newcloud.service.edu.entity.vo.web.WebCourseTitleVo;
 import com.tang.newcloud.service.edu.entity.vo.web.WebCourseVo;
 import com.tang.newcloud.service.edu.feign.OssFileService;
 import com.tang.newcloud.service.edu.mapper.*;
@@ -274,9 +275,9 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
     }
 
     @Override
-    public List<String> getCourses(String course) {
-        List<String> courses = courseMapper.selectNames(course);
-        List<String> collect = courses.stream().distinct().collect(Collectors.toList());
+    public List<WebCourseTitleVo> getCourses(String course) {
+        List<WebCourseTitleVo> courses = courseMapper.selectNames(course);
+        List<WebCourseTitleVo> collect = courses.stream().distinct().collect(Collectors.toList());
         return collect;
     }
 }

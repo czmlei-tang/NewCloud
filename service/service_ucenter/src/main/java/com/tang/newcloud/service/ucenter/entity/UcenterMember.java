@@ -16,6 +16,7 @@ import lombok.experimental.Accessors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class UcenterMember extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

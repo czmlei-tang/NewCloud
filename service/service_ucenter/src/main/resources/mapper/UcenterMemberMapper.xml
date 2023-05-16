@@ -45,6 +45,9 @@
     <update id="updateStatus">
         update ucenter_member set status=#{type} where id =#{id}
     </update>
+    <update id="checkNicknameAndAvatar">
+
+    </update>
     <select id="selectMemberCount" resultType="java.lang.Integer">
         select count(*) from ucenter_member where nickname=#{nickname} and mobile=#{mobile}
     </select>

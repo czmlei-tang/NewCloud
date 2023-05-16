@@ -1,5 +1,6 @@
 package com.tang.newcloud.service.edu.quartz;
 
+import com.tang.newcloud.common.base.util.SnowFlakeUtil;
 import com.tang.newcloud.service.edu.entity.Comment;
 import com.tang.newcloud.service.edu.entity.GoodNumber;
 import com.tang.newcloud.service.edu.mapper.CommentMapper;
@@ -56,7 +57,7 @@ public class GoodJob extends QuartzJobBean {
                 //写入点赞数
                 toId = RedisKeyUtils.getToid(id);
                 RBucket<Object> bucket = redissonClient.getBucket(toId);
-                commentMapper.updateGoodNumber((Integer)bucket.get(),toId);
+                commentMapper.updateGoodNumber((Long)bucket.get(),toId);
                 //从集合中删除key
                 dataIn.remove(id);
             }
@@ -67,6 +68,10 @@ public class GoodJob extends QuartzJobBean {
             GoodNumber goodNumber = dealWithString(outID, 0);
             Integer isDelete = goodNumberMapper.deleteData(goodNumber);
             if(isDelete > 0){
+                toId = RedisKeyUtils.getToid(outID);
+                RBucket<Object> bucket = redissonClient.getBucket(toId);
+                Long total = (Long)bucket.get();
+                commentMapper.updateGoodNumber(total!=null?total:0,toId);
                 dataOut.remove(outID);
             }
         }
@@ -86,7 +91,7 @@ public class GoodJob extends QuartzJobBean {
         String toId = toidAndFromId[0];
         String fromId = toidAndFromId[1];
         GoodNumber goodNumber = new GoodNumber();
-        goodNumber.setId(toId).setStatus(status).setFromId(fromId);
+        goodNumber.setToId(toId).setStatus(status).setFromId(fromId).setId(SnowFlakeUtil.getDefaultSnowFlakeId().toString());
         return goodNumber;
     }
 }
